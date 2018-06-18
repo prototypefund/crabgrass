@@ -4,7 +4,7 @@ require 'javascript_integration_test'
 
 class PageSidebarJavascriptTest < JavascriptIntegrationTest
 
-  fixtures :users, :groups, 'group/memberships', :pages
+  fixtures :users, :groups, :pages
 
   def setup
     super

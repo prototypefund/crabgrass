@@ -1,4 +1,5 @@
 
+
 namespace :db do
   namespace :fixtures do
     desc 'Create YAML test fixtures from a particular table in an existing database. Requires TABLE env set.'
@@ -29,6 +30,7 @@ namespace :db do
     desc "Load fixtures into the current environment's database. Load specific fixtures using FIXTURES=x,y. Load from subdirectory in test/fixtures using FIXTURES_DIR=z. Specify an alternative path (eg. spec/fixtures) using FIXTURES_PATH=spec/fixtures."
     task load: %i[environment load_config] do
       require 'active_record/fixtures'
+      require_relative '../../test/helpers/fixture_id_helper'
 
       base_dir = if ENV['FIXTURES_PATH']
                    STDERR.puts 'Using FIXTURES_PATH env variable is deprecated, please use ' \

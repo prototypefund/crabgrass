@@ -41,8 +41,7 @@ module User::Users
                dependent: :destroy
 
       has_many :friendships,
-               -> { where type: 'Friendship' },
-               class_name: 'User::Relationship'
+               class_name: 'User::Friendship'
 
       has_many :discussions,
                -> { order 'discussions.replied_at DESC' },

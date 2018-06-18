@@ -20,7 +20,7 @@ class DiscussionTest < ActiveSupport::TestCase
   end
 
   def test_with_page
-    page = Page.find 1
+    page = pages(:page1)
     user = users(:red)
     post = nil
 

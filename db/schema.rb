@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_09_111135) do
+ActiveRecord::Schema.define(version: 2019_05_23_223739) do
 
   create_table "asset_versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "asset_id"
@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(version: 2019_05_09_111135) do
   create_table "castle_gates_keys", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "castle_id"
     t.string "castle_type", limit: 191
-    t.integer "holder_code"
+    t.bigint "holder_code"
     t.integer "gate_bitfield", default: 1
     t.index ["castle_id", "castle_type", "holder_code"], name: "index_castle_gates_by_castle_and_holder_code"
   end
@@ -260,7 +260,7 @@ ActiveRecord::Schema.define(version: 2019_05_09_111135) do
     t.string "media"
     t.integer "stars_count", default: 0
     t.string "owner_name"
-    t.integer "owner_id"
+    t.bigint "owner_id"
     t.index ["access_ids", "tags"], name: "idx_fulltext", type: :fulltext
     t.index ["delta"], name: "index_page_terms_on_delta"
     t.index ["page_id"], name: "page_id"

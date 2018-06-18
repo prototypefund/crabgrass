@@ -33,7 +33,7 @@ dolphin_expires_2050:
     =ZtcX
     -----END PGP PUBLIC KEY BLOCK-----
   fingerprint: 129DBF034DAECA0463EA40837F0B69748CF3D503
-  user_id: 11
+  user: dolphin
   expires:
   created_at: &3 2018-02-15 10:48:12.000000000 Z
   updated_at: &4 2018-02-15 10:48:12.000000000 Z
@@ -72,7 +72,7 @@ blue_valid_forever:
     =oHuj
     -----END PGP PUBLIC KEY BLOCK-----
   fingerprint: 129DBF034DAECA0463EA40837F0B69748CF3D503
-  user_id: 4
+  user: blue
   expires:
   created_at: &3 2018-02-15 10:48:12.000000000 Z
   updated_at: &4 2018-02-15 10:48:12.000000000 Z
@@ -111,7 +111,7 @@ green_expired:
     =fvL3
     -----END PGP PUBLIC KEY BLOCK-----
   fingerprint: CA0463EA40837F0B69748CF3D503
-  user_id: 9
+  user: green
   expires:
   created_at: &3 2018-02-15 10:48:12.000000000 Z
   updated_at: &4 2018-02-15 10:48:12.000000000 Z
@@ -143,7 +143,7 @@ red_broken:
     =oHuj
     -----END PGP PUBLIC KEY BLOCK-----
   fingerprint: CA0463EA40837F0B69748CF3D503
-  user_id: 8
+  user: red
   expires:
   created_at: &3 2018-02-15 10:48:12.000000000 Z
   updated_at: &4 2018-02-15 10:48:12.000000000 Z

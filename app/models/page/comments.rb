@@ -12,8 +12,6 @@ module Page::Comments
     end
   end
 
-  public
-
   def posts(pagination_options = {})
     return [] unless discussion
     pagination_options[:per_page] ||= Conf.pagination_size

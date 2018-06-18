@@ -5,7 +5,7 @@ require_relative '../helpers/integration/javascript/page_actions.rb'
 
 class PageSidebarTest < IntegrationTest
   include PageActions
-  fixtures :users, :groups, 'group/memberships', :pages
+  fixtures :users, :groups, :pages
 
   def setup
     super

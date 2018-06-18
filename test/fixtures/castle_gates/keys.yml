@@ -35,174 +35,84 @@
     args.inject(1) {|prior, arg| prior |= (2**map[arg]) }
   end
 %>
-true_levellers:
-  castle_id: 1
-  castle_type: Group
-  holder_code: 81
-  gate_bitfield: <%= ~0 %>
 
-animals:
-  castle_id: 2
-  castle_type: Group
-  holder_code: 82
+
+<% %i(true_levellers animals rainbow warm cold recent_group public_group public_committee private_committee private_group cnt fai fau super_admin_group).each do |name| %>
+
+<%=name%>:
+  castle: <%= name %> (Group)
+  holder_code: 8<%= identify(name) %>
   gate_bitfield: <%= ~0 %>
+<% end %>
 
 animals_for_public:
-  castle_id: 2
-  castle_type: Group
+  castle: animals (Group)
   holder_code: 0
   gate_bitfield: <%= bitfield(group, :view, :pester, :request_membership) %>
 
-rainbow:
-  castle_id: 3
-  castle_type: Group
-  holder_code: 83
-  gate_bitfield: <%= ~0 %>
-
 rainbow_for_public:
-  castle_id: 3
-  castle_type: Group
+  castle: rainbow (Group)
   holder_code: 0
   gate_bitfield: <%= bitfield(group, :view, :pester) %>
 
-warm:
-  castle_id: 31
-  castle_type: Group
-  holder_code: 831
-  gate_bitfield: <%= ~0 %>
-
-cold:
-  castle_id: 32
-  castle_type: Group
-  holder_code: 832
-  gate_bitfield: <%= ~0 %>
-
-recent_group:
-  castle_id: 33
-  castle_type: Group
-  holder_code: 833
-  gate_bitfield: <%= ~0 %>
-
-public_group:
-  castle_id: 1000
-  castle_type: Group
-  holder_code: 81000
-  gate_bitfield: <%= ~0 %>
-
 public_group_for_public:
-  castle_id: 1000
-  castle_type: Group
+  castle: public_group (Group)
   holder_code: 0
   gate_bitfield: <%= bitfield(group, :view, :pester, :see_committees) %>
 
-public_committee:
-  castle_id: 1001
-  castle_type: Group
-  holder_code: 81001
-  gate_bitfield: <%= ~0 %>
-
 public_committee_for_public:
-  castle_id: 1001
-  castle_type: Group
+  castle: public_committee (Group)
   holder_code: 0
   gate_bitfield: <%= bitfield(group, :view, :pester, :see_members, :request_membership) %>
 
-private_committee:
-  castle_id: 1002
-  castle_type: Group
-  holder_code: 81002
-  gate_bitfield: <%= ~0 %>
-
-private_group:
-  castle_id: 2000
-  castle_type: Group
-  holder_code: 82000
-  gate_bitfield: <%= ~0 %>
-
-# these two are also the sites networks.
-cnt:
-  castle_id: 3001
-  castle_type: Group
-  holder_code: 83001
-  gate_bitfield: <%= ~0 %>
-
 cnt_for_public:
-  castle_id: 3001
-  castle_type: Group
+  castle: cnt (Group)
   holder_code: 0
   gate_bitfield: <%= bitfield(group, :view, :pester, :request_membership) %>
-
-fai:
-  castle_id: 3002
-  castle_type: Group
-  holder_code: 83002
-  gate_bitfield: <%= ~0 %>
 
 fai_for_public:
-  castle_id: 3002
-  castle_type: Group
+  castle: fai (Group)
   holder_code: 0
   gate_bitfield: <%= bitfield(group, :view, :pester, :request_membership) %>
 
-# lets have another one so we can access it from within the sites.
-fau:
-  castle_id: 3003
-  castle_type: Group
-  holder_code: 83003
-  gate_bitfield: <%= ~0 %>
+# TODO: simplify gate_bitfield
 
-#
-# super admin group
-#
-
-super_admin_group:
-  castle_id: 4001
-  castle_type: Group
-  holder_code: 84001
-  gate_bitfield: <%= ~0 %>
-
-castle_gates_keys_59:
-  castle_id: 4011
-  castle_type: Group
-  holder_code: 84011
+groupwithcouncil_for_group:
+  castle: groupwithcouncil (Group)
+  holder_code: 8<%= identify(:groupwithcouncil) %>
   gate_bitfield: 7999
 
-castle_gates_keys_60:
-  castle_id: 4012
-  castle_type: Group
-  holder_code: 84012
+council_for_council:
+  castle: councilofgroupwithcouncil (Group)
+  holder_code: 8<%= identify(:councilofgroupwithcouncil) %>
   gate_bitfield: 8191
 
-castle_gates_keys_61:
-  castle_id: 4011
-  castle_type: Group
-  holder_code: 84012
+council_for_group:
+  castle: groupwithcouncil (Group)
+  holder_code: 8<%= identify(:councilofgroupwithcouncil) %>
   gate_bitfield: 8191
 
 ##
 ## User Keys:
 ##
 
-<% [[1, "quentin"], [2, "aaron"], [3, "gerrard"], [4, "blue"], [5, "orange"], [6, "purple"], [7, "yellow"], [8, "red"], [9, "green"], [10, "kangaroo"], [11, "dolphin"], [12, "penguin"], [13, "iguana"]].each do |id,login| %>
+<% %i(quentin aaron gerrard blue orange purple yellow red green kangaroo dolphin penguin iguana n00b).each do |login| %>
 
 # friends may view and pester
 <%=login%>_friends:
-  castle_id: <%= id %>
-  castle_type: User
-  holder_code: 7<%= id %>
+  castle: <%= login %> (User)
+  holder_code: 7<%= identify(login) %>
   gate_bitfield: <%= bitfield(user, :view, :pester) %>
 
 # peers may view and pester
 <%=login%>_peers:
-  castle_id: <%= id %>
-  castle_type: User
-  holder_code: 9<%= id %>
+  castle: <%= login %> (User)
+  holder_code: 9<%= identify(login) %>
   gate_bitfield: <%= bitfield(user, :view, :pester) %>
 
 # public may view and pester
 <%=login%>_public:
-  castle_id: <%= id %>
-  castle_type: User
+  castle: <%= login %> (User)
   holder_code: 0
   gate_bitfield: <%= bitfield(user, :view, :pester) %>
 <% end %>

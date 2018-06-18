@@ -1,7 +1,7 @@
 require 'javascript_integration_test'
 
 class GroupSettingsTest < JavascriptIntegrationTest
-  fixtures :users, 'group/memberships', :groups, :profiles
+  fixtures :users, :groups, :profiles
 
   def setup
     super

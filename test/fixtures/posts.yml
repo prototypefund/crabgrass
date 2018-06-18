@@ -1,6 +1,5 @@
 gerrard_to_blue:
-  id: 3
-  user_id: 3
+  user: gerrard
   discussion_id: 3
   body: "Hi Blue, Just testing messages."
   body_html: "Hi Blue, Just testing messages."
@@ -9,7 +8,7 @@ gerrard_to_blue:
   created_at: "<%= 10.minutes.ago.to_s(:db) %>"
 
 blue_on_committee_page:
-  user_id: 4
+  user: blue
   discussion: committee_page
   body: "Hi Committee, Just testing comments."
   body_html: "Hi Committee, Just testing comments."
@@ -18,7 +17,7 @@ blue_on_committee_page:
   created_at: "<%= 200.minutes.ago.to_s(:db) %>"
 
 red_on_committee_page:
-  user_id: 8
+  user: red
   discussion: committee_page
   body: "Hi Committee, This is red"
   body_html: "Hi Committee, This is red"

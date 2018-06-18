@@ -7,8 +7,7 @@
 
 friend_blue:
   type: RequestNotice
-  user_id: 4
-  # user: blue
+  user: blue
   data: |-
     ---
     :title: request_to_friend
@@ -22,7 +21,7 @@ friend_blue:
 
 join_animals:
   type: RequestNotice
-  user_id: 4
+  user: blue
   data: |-
     ---
     :title: request_to_join_you
@@ -36,7 +35,7 @@ join_animals:
 
 create_council:
   type: RequestNotice
-  user_id: 4
+  user: blue
   data: |-
     ---
     :title: request_to_create_council
@@ -51,8 +50,8 @@ create_council:
 
 page_notice_1:
   type: PageNotice
-  user_id: 4
-  noticable_id: 2
+  user: blue
+  noticable: blue_page (Page)
   noticable_type: Page
   data: |-
     ---

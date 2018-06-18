@@ -30,17 +30,6 @@ class GroupPolicy < ApplicationPolicy
       group.committee? or group.council? or group.users.count <= MAX_SIZE_FOR_QUICK_DESTROY_GROUP
     )
   end
-
-  ##
-  ## MEMBERSHIPS
-  ##
-
-  ##
-  ## CREATION
-  ##
-
-
-  # may the current user add someone directly to a group without sending them an invite first?
   #
   # currently, this is possible only if the group is a committee and the user is in the parent group.
   #
@@ -96,7 +85,6 @@ class GroupPolicy < ApplicationPolicy
   #
   # A group member can create a council for a group during the group's first week,
   # but after that they can only create a request to create a council, which must be approved.
-  # see may_create_council_request.
   #
   def may_create_council?
     group.class.can_have_council? and

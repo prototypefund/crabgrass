@@ -1,34 +1,34 @@
 # Groups on default site for testing:
 
 federation1:
-  group_id: 1 # the-true-levellers
-  network_id: 3001
+  group: true_levellers
+  network: cnt
 
 federation1b:
-  group_id: 1 # the-true-levellers
-  network_id: 3002   # the true levellers are on both sites.
+  group: true_levellers
+  network: fai
 
 federation2:
-  group_id: 2 # animals
-  network_id: 3002   # animals are on the other site.
+  group: animals
+  network: fai
 
 federation2b:
-  group_id: 2 # animals
-  network_id: 3003   # animals are in the fau for network test.
+  group: animals
+  network: fau
 
 federation3:
-  group_id: 3 # rainbow
-  network_id: 3001
+  group: rainbow
+  network: cnt
 
 federation2000:
-  group_id: 2000 #private_group
-  network_id: 3001
+  group: private_group
+  network: cnt
 
 federation4:
-  group_id: 1000 #public_group
-  network_id: 3001
+  group: public_group
+  network: cnt
 
 federation5:
-  group_id: 31 #warm
-  network_id: 3001
+  group: warm
+  network: cnt
 

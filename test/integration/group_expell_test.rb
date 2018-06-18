@@ -9,7 +9,7 @@ class GroupExpellTest < IntegrationTest
       login
       visit '/animals'
       click_on 'Members'
-      assert first('tr.even').has_content? 'Kangaroo!'
+      assert first('tr.even').has_content? 'Iguana!'
       first('tr.even').click_on 'Remove'
       logout
       @user = users(:penguin)
@@ -19,7 +19,7 @@ class GroupExpellTest < IntegrationTest
       click_on 'Request to Remove Member is pending'
       click_on 'Approve'
       click_on 'Members'
-      assert_no_content 'Kangaroo!'
+      assert_no_content 'Iguana!'
     end
   end
 
@@ -30,7 +30,7 @@ class GroupExpellTest < IntegrationTest
       login
       visit '/animals'
       click_on 'Members'
-      assert first('tr.even').has_content? 'Kangaroo!'
+      assert first('tr.even').has_content? 'Iguana!'
       first('tr.even').click_on 'Remove'
       logout
       @user = users(:penguin)
@@ -40,23 +40,23 @@ class GroupExpellTest < IntegrationTest
       click_on 'Request to Remove Member is pending'
       click_on 'Reject'
       click_on 'Members'
-      assert_content 'Kangaroo!'
+      assert_content 'Iguana!'
       logout
       @user = users(:blue)
       login
       visit '/animals'
       click_on 'Members'
-      assert first('tr.even').has_content? 'Kangaroo!'
+      assert first('tr.even').has_content? 'Iguana!'
       first('tr.even').click_on 'Remove'
       logout
-      @user = users(:iguana)
+      @user = users(:kangaroo)
       login
       visit '/animals'
       click_on 'Members'
       click_on 'Request to Remove Member is pending'
       click_on 'Approve'
       click_on 'Members'
-      assert_no_content 'Kangaroo!'
+      assert_no_content 'Iguana!'
     end
   end
 
@@ -68,7 +68,7 @@ class GroupExpellTest < IntegrationTest
       login
       visit '/animals'
       click_on 'Members'
-      assert first('tr.even').has_content? 'Kangaroo!'
+      assert first('tr.even').has_content? 'Iguana!'
       first('tr.even').click_on 'Remove'
       logout
       @user = users(:penguin)
@@ -78,16 +78,16 @@ class GroupExpellTest < IntegrationTest
       click_on 'Request to Remove Member is pending'
       click_on 'Approve'
       click_on 'Members'
-      assert_no_content 'Kangaroo!'
+      assert_no_content 'Iguana!'
       logout
     end
     Time.stub(:now, 2.months.from_now) do
-      groups(:animals).add_user! users(:kangaroo)
+      groups(:animals).add_user! users(:iguana)
       @user = users(:blue)
       login
       visit '/animals'
       click_on 'Members'
-      assert first('tr.even').has_content? 'Kangaroo!'
+      assert first('tr.even').has_content? 'Iguana!'
       assert_no_content 'Request to Remove Member is pending'
     end
   end
@@ -100,7 +100,7 @@ class GroupExpellTest < IntegrationTest
       visit '/fai'
       click_on 'Members'
       first('#column_left').click_on 'Groups'
-      assert first('tr.even').has_content? 'animals'
+      assert first('tr.odd').has_content? 'animals'
       first('tr.even').click_on 'Remove'
       logout
       @user = users(:penguin)
@@ -121,12 +121,12 @@ class GroupExpellTest < IntegrationTest
     Time.stub(:now, 2.weeks.from_now) do
       @user = users(:blue)
       page = create_page(owner: groups(:animals), title: 'animals secrets')
-      page.add(users(:kangaroo), star: true, access: :admin)
+      page.add(users(:iguana), star: true, access: :admin)
       page.save!
       login
       visit '/animals'
       click_on 'Members'
-      assert first('tr.even').has_content? 'Kangaroo!'
+      assert first('tr.even').has_content? 'Iguana!'
       first('tr.even').click_on 'Remove'
       logout
       @user = users(:penguin)
@@ -136,9 +136,9 @@ class GroupExpellTest < IntegrationTest
       click_on 'Request to Remove Member is pending'
       click_on 'Approve'
       click_on 'Members'
-      assert_no_content 'Kangaroo!'
+      assert_no_content 'Iguana!'
       logout
-      @user = users(:kangaroo)
+      @user = users(:iguana)
       login
       visit '/animals'
       assert_no_content 'animals secrets'

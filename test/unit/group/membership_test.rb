@@ -7,7 +7,7 @@ class Group::MembershipTest < ActiveSupport::TestCase
 
   def test_memberships
     u = create_user login: 'membershiptester'
-    g = Group.find 1
+    g = groups(:true_levellers)
     oldcount = g.users.count
     oldversion = g.version
 

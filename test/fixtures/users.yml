@@ -26,12 +26,11 @@
 
 <%- bcrypt_cost = BCrypt::Engine::MIN_COST %>
 
-<% [[1, "quentin"], [2, "aaron"], [3, "gerrard"], [4, "blue"], [5, "orange"], [6, "purple"], [7, "yellow"], [8, "red"], [9, "green"], [10, "kangaroo"], [11, "dolphin"], [12, "penguin"], [13, "iguana"], [14, "n00b"]].each do |id,login| %>
+<% %i(quentin aaron gerrard blue orange purple yellow red green kangaroo dolphin penguin iguana n00b).each do |login| %>
 <%=login%>:
-  id: <%= id %>
-  login: <%= login %>
+  login: $LABEL
   display_name: <%=login.capitalize%>!
-  email: <%= "#{login}@lvh.me" %>
+  email: $LABEL@lvh.me
   password_digest: <%= BCrypt::Password.create(login, cost: bcrypt_cost) %>
   created_at: <%= rand(5).days.ago.to_s :db %>
   last_seen_at: <%= rand(10).days.ago.to_s :db %>

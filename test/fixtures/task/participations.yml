@@ -1,20 +1,20 @@
 blue_4:
-  user_id: 4
+  user: blue
   task_id: 4
   assigned: true
 
 blue_5:
-  user_id: 4
+  user: blue
   task_id: 5
   assigned: true
 
 quentin_6:
-  user_id: 1
+  user: quentin
   task_id: 6
   watching: true
 
 gerrard_6:
-  user_id: 2
+  user: gerrard
   task_id: 6
   waiting: true
 

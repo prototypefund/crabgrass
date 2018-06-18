@@ -121,7 +121,7 @@ class Page::BaseTest < ActiveSupport::TestCase
 
   def test_user_associations
     @page = create_page title: 'this is a very fine test page'
-    user = User.find 3
+    user = users(:gerrard)
     @page.created_by = user
     @page.save
     assert_not_nil @page.created_by

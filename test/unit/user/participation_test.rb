@@ -36,8 +36,8 @@ class User::ParticipationTest < ActiveSupport::TestCase
   end
 
   def test_participations
-    user = User.find 4
-    group = Group.find 3
+    user = users(:blue)
+    group = groups(:rainbow)
 
     page = Page.create title: 'zebra'
 

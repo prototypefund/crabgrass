@@ -194,3 +194,61 @@ module ActiveRecord::AttributeMethods::ClassMethods
     time_zone_aware_attributes && !skip_time_zone_conversion_for_attributes.include?(name.to_sym) && %i[datetime timestamp].include?(column.type)
   end
 end
+
+require 'active_record/fixtures'
+
+module ActiveRecord
+  class FixtureSet
+    class HasManyThroughProxy < ReflectionProxy # :nodoc:
+      def join_class
+        name = @association.through_reflection.options[:class_name].presence
+        name ||= join_table
+        name.classify.safe_constantize
+      end
+
+      def record_timestamps
+        join_class && join_class.record_timestamps
+      end
+
+      def timestamp_column_names
+        @timestamp_column_names ||=
+          %w(created_at created_on updated_at updated_on) & column_names
+      end
+
+      def column_names
+        @column_names ||= join_class.connection.columns(join_table).collect(&:name)
+      end
+    end
+
+    private
+
+      def add_join_records(rows, row, association)
+        # This is the case when the join table has no fixtures file
+        if (targets = row.delete(association.name.to_s))
+          table_name  = association.join_table
+          column_type = association.primary_key_type
+          lhs_key     = association.lhs_key
+          rhs_key     = association.rhs_key
+          timestamp   = if association.record_timestamps
+            config.default_timezone == :utc ? Time.now.utc : Time.now
+          end
+
+          targets = targets.is_a?(Array) ? targets : targets.split(/\s*,\s*/)
+          rows[table_name].concat targets.map { |target|
+            join_row = {
+              lhs_key => row[primary_key_name],
+              rhs_key => ActiveRecord::FixtureSet.identify(target, column_type)
+            }
+            if timestamp
+              association.timestamp_column_names.each do |c_name|
+                next if join_row.key?(c_name)
+                join_row[c_name] = timestamp.to_s(:db)
+              end
+            end
+
+            join_row
+          }
+        end
+      end
+  end
+end

@@ -2,18 +2,17 @@
   ## NOTE!!! IF YOU MODIFY THIS FILE, YOU NEED TO THEN RUN THIS
   ## rake cg:test:update_fixtures
   ##%>
-
 <% srand(314159265359) %>
+<% users = %i(quentin aaron gerrard blue orange purple yellow red green kangaroo dolphin penguin iguana) %>
 
 <% id = 1 %>
 <% for i in 4..10 %>
-  <% people = (1..13).to_a.sort{rand(2)} %>
+  <% people = users.sort{rand(2)} %>
   # each page has 1 to 5 people
   <% for j in 1..(rand(5)+1) %>
 userpage_<%=i%>_<%=j%>:
-  id: <%= id+=1 %>
-  page_id: <%= i %>
-  user_id: <%= people.pop %>
+  page: page<%= i %>
+  user: <%= people.pop %>
   access: <%= rand(2)+1 %>
   viewed: <%= rand(2) %>
   resolved: <%= rand(2) %>
@@ -23,138 +22,108 @@ userpage_<%=i%>_<%=j%>:
 <% end %>
 
 blue_page1:
-  id: <%= id+=1 %>
-  page_id: 1
-  user_id: 4
+  page: page1
+  user: blue
   access: 1
 red_page1:
-  id: <%= id+=1 %>
-  page_id: 1
-  user_id: 8
+  page: page1
+  user: red
   access: 1
-#red_page2:
-#  id: <%= id+=1 %>
-#  page_id: 2
-#  user_id: 8
-#  access: 1
 red_page3:
-  id: <%= id+=1 %>
-  page_id: 3
-  user_id: 8
+  page: page3
+  user: red
   access: 1
 tasklist11:
-  id: <%= id+=1 %>
-  page_id: 200
-  user_id: 1
+  page: tasklist1
+  user: quentin
   access: 1
 tasklist21:
-  id: <%= id+=1 %>
-  page_id: 201
-  user_id: 11
+  page: tasklist2
+  user: dolphin
   access: 1
 tasklist14:
-  id: <%= id+=1 %>
-  page_id: 200
-  user_id: 4
+  page: tasklist1
+  user: blue
   access: 1
 tasklist24:
-  id: <%= id+=1 %>
-  page_id: 201
-  user_id: 4
+  page: tasklist2
+  user: blue
   access: 1
 ranked_vote_orange:
-  id: <%= id+=1 %>
-  page_id: 190
-  user_id: 5
+  page: ranked_vote
+  user: orange
   access: 1
 deleted_blue:
-  id: <%= id+=1 %>
-  page_id: 207
-  user_id: 4
+  page: delete_test
+  user: blue
   access: 1
 deleted_orange:
-  id: <%= id+=1 %>
-  page_id: 207
-  user_id: 5
+  page: delete_test
+  user: orange
   access: 3
-wiki_orange:
-  id: <%= id+=1 %>
-  page_id: 210
-  user_id: 5
+wiki:
+  page: wiki
+  user: orange
   access: 1
 wiki_red:
-  id: <%= id+=1 %>
-  page_id: 210
-  user_id: 8
+  page: wiki
+  user: red
   access: 1
 wiki_blue:
-  id: <%= id+=1 %>
-  page_id: 210
-  user_id: 4
+  page: wiki
+  user: blue
   access: 1
 message_gerrard:
-  id: <%= id+=1 %>
-  page_id: 220
-  user_id: 3
+  page: public_wiki
+  user: gerrard
   access: 1
 message_blue:
-  id: <%= id+=1 %>
-  page_id: 220
-  user_id: 4
+  page: public_wiki
+  user: blue
   access: 1
 malformed_wiki_orange:
-  id: <%= id+=1 %>
-  page_id: 230
-  user_id: 5
+  page: malformed_wiki
+  user: orange
   access: 1
 malformed_wiki_orange:
-  id: <%= id+=1 %>
-  page_id: 230
-  user_id: 5
+  page: malformed_wiki
+  user: orange
   access: 1
 multi_section_wiki_blue:
-  id: <%= id+=1 %>
-  page_id: 240
-  user_id: 4
+  page: multi_section_wiki
+  user: blue
   access: 1
 multi_section_wiki_gerrard:
-  id: <%= id+=1 %>
-  page_id: 240
-  user_id: 3
+  page: multi_section_wiki
+  user: gerrard
   access: 1
 survey_blank_blue:
-  id: <%= id+=1 %>
-  page_id: 215
-  user_id: 4
+  page: survey_blank
+  user: blue
   access: 1
 survey_blank_dolphin:
-  id: <%= id+=1 %>
-  page_id: 215
-  user_id: 11
+  page: survey_blank
+  user: dolphin
   access: 2
 <% 1.upto(5) do |i| %>
 survey_ipsum_<%= id+=1 %>:
-  id: <%= id %>
-  page_id: 214
-  user_id: <%= i %>
+  page: survey1
+  user: <%= users[i-1] %>
   access: 1
 <% end %>
 <% 10.upto(13) do |i| %>
 survey_ipsum_<%= id+=1 %>:
-  id: <%= id %>
-  page_id: 214
-  user_id: <%= i %>
+  page: survey1
+  user: <%= users[i-1] %>
   access: 2
 <% end %>
 
 rate_many_<%= id+=1 %>:
-  id: <%= id %>
-  page_id: 217
-  user_id: 5 # orange
+  page: rate_many_page
+  user: orange
   access: 1
 
 rate_many_<%= id+=1 %>:
-  id: <%= id %>
-  page_id: 217
-  user_id: 8 # red
+  page: rate_many_page
+  user: red
   access: 2

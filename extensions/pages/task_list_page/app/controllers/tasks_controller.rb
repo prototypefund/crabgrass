@@ -21,7 +21,7 @@ class TasksController < Page::BaseController
         task.update_attribute('position', i + 1) if i
       end
     end
-    render nothing: true
+    render body: nil
   end
 
   def edit; end

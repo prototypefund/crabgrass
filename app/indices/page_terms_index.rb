@@ -30,7 +30,7 @@ ThinkingSphinx::Index.define 'page/terms', with: :active_record,
 
   # flags and access
   has :resolved
-  has :access_ids, multi: true, type: :integer
+  has :access_ids, multi: true, type: :bigint
   has :media, multi: true, type: :integer
   has :flow
 end

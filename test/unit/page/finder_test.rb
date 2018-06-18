@@ -29,7 +29,7 @@ class Page::FinderTest < ActiveSupport::TestCase
 
   def test_find_page_by_id
     page = pages(:blue_page)
-    finder = find 'blsadfaerue', 'blasdfsadfsdfpage+1002'
+    finder = find 'blsadfaerue', 'blasdfsadfsdfpage+'+page.id.to_s
     assert_equal page, finder.page
   end
 

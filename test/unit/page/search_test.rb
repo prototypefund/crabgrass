@@ -36,7 +36,7 @@ class Page::SearchTest < ActiveSupport::TestCase
   def test_combined_search
     login(:blue)
     assert_path_filters '/created-by/blue/public' do |p|
-      !p.deleted? && p.created_by_id == 4 && p.public?
+      !p.deleted? && p.created_by == users(:blue) && p.public?
     end
   end
 
@@ -66,7 +66,7 @@ class Page::SearchTest < ActiveSupport::TestCase
   def test_search_by_ownership
     login(:blue)
     assert_path_filters '/owned-by/person/blue' do |p|
-      !p.deleted? && p.owner_id == 4
+      !p.deleted? && p.owner == users(:blue)
     end
   end
 

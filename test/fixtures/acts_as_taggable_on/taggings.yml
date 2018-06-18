@@ -5,6 +5,7 @@
 ---
 <%
   page_count = 10
+  srand(314159265359)
   tags = %w(joy trust fear surprise sadness disgust anger happiness love anticipation)
   tags += tags.reverse
 %>
@@ -12,24 +13,23 @@
 <% tags.each do |tag| %>
 <%= "#{tag}_#{page_id}" %>:
   tag: <%= tag %>
-  taggable_id: <%= page_id %>
+  taggable: page<%= page_id %>
   taggable_type: Page
   context: "tags"
 <% end %>
 <% end %>
-
 
 # we rely on having a page with these two tags accessible by blue
 # in page search tests
 
 extra_tag_for_blue_anticipation:
   tag: anticipation
-  taggable_id: 1
+  taggable: page1
   taggable_type: Page
   context: "tags"
 
 extra_tag_for_blue_special_chars:
   tag: special_chars
-  taggable_id: 1
+  taggable: page1
   taggable_type: Page
   context: "tags"

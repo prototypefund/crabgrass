@@ -1,66 +1,53 @@
-<% id = 0 %>
-# give user 4 (aka blue) lots of contacts
+# give user blue lots of contacts
 blue_orange:
-  user_id: 4
-  contact_id: 5
+  user: blue
+  contact: orange
   type: Friendship
-  discussion_id: 4
-  id: <%=id+=1%>
+  discussion: blue_orange
 orange_blue:
-  user_id: 5
-  contact_id: 4
+  user: orange
+  contact: blue
   type: Friendship
-  discussion_id: 4
-  id: <%=id+=1%>
+  discussion: blue_orange
 blue_purple:
-  user_id: 4
-  contact_id: 6
+  user: blue
+  contact: purple
   type: Friendship
-  discussion_id: 5
-  id: <%=id+=1%>
+  discussion: blue_purple
 purple_blue:
-  user_id: 6
-  contact_id: 4
+  user: purple
+  contact: blue
   type: Friendship
-  discussion_id: 5
-  id: <%=id+=1%>
+  discussion: blue_purple
 blue_yellow:
-  user_id: 4
-  contact_id: 7
-  discussion_id: 6
-  id: <%=id+=1%>
+  user: blue
+  contact: yellow
+  discussion: blue_yellow
 yellow_blue:
-  user_id: 7
-  contact_id: 4
-  discussion_id: 6
-  id: <%=id+=1%>
+  user: yellow
+  contact: blue
+  discussion: blue_yellow
 blue_red:
-  user_id: 4
-  contact_id: 8
-  discussion_id: 7
-  id: <%=id+=1%>
+  user: blue
+  contact: red
+  discussion: blue_red
 red_blue:
-  user_id: 8
-  contact_id: 4
-  discussion_id: 7
-  id: <%=id+=1%>
+  user: red
+  contact: blue
+  discussion: blue_red
 blue_green:
-  user_id: 4
-  contact_id: 9
-  discussion_id: 8
-  id: <%=id+=1%>
+  user: blue
+  contact: green
+  discussion: blue_green
 green_blue:
-  user_id: 9
-  contact_id: 4
-  discussion_id: 8
-  id: <%=id+=1%>
+  user: green
+  contact: blue
+  discussion: blue_green
 purple_orange:
-  user_id: 6
-  contact_id: 5
-  discussion_id: 9
-  id: <%=id+=1%>
+  user: purple
+  contact: orange
+  discussion: purple_orange
 orange_purple:
-  user_id: 5
-  contact_id: 6
-  discussion_id: 9
-  id: <%=id+=1%>
+  user: orange
+  contact: purple
+  discussion: purple_orange

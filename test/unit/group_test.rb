@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class GroupTest < ActiveSupport::TestCase
-  :castle_gates_keys
+  fixtures :users, :groups, 'castle_gates/keys', 'user/participations', :pages
 
   def teardown
     Group.clear_key_cache # required! see CastleGates README
@@ -38,7 +38,7 @@ class GroupTest < ActiveSupport::TestCase
   end
 
   def test_try_to_create_group_with_same_name_as_user
-    u = User.find(1)
+    u = users(:quentin)
     assert u.login, 'user should be valid'
 
     g = Group.create name: u.login
@@ -93,7 +93,6 @@ class GroupTest < ActiveSupport::TestCase
     assert_equal committee.parent, group
     assert blue.direct_member_of?(committee)
     assert !red.direct_member_of?(committee)
-
     assert red.may?(:admin, group)
     assert blue.may?(:admin, group)
     assert !group.has_a_council?

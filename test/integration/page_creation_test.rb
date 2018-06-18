@@ -2,7 +2,7 @@ require 'javascript_integration_test'
 
 class PageCreationTest < JavascriptIntegrationTest
 
-  fixtures :users, :groups, 'group/memberships'
+  fixtures :users, :groups
 
   def test_share_with_users
     login
