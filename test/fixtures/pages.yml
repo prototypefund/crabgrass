@@ -248,7 +248,7 @@ announcement1:
 ## ASSETS
 ##
 
-asset1:
+asset_bee:
   owner_name: animals
   owner_id: 2
   owner_type: Group
@@ -272,7 +272,7 @@ asset1:
   updated_at: "<%= updated.minutes.ago.to_s(:db) %>"
   created_at: "<%= created.minutes.ago.to_s(:db) %>"
 
-asset2:
+asset_sunset:
   owner_name: animals
   owner_id: 2
   owner_type: Group
@@ -296,7 +296,7 @@ asset2:
   updated_at: "<%= updated.minutes.ago.to_s(:db) %>"
   created_at: "<%= created.minutes.ago.to_s(:db) %>"
 
-asset3:
+asset_crabgrass:
   owner_name: animals
   owner_id: 2
   owner_type: Group
