@@ -12,6 +12,7 @@
       =h html_title
     %article#content
       = yield
+    - if @posts.present?
       %div.comments
         %h2
           = :comments.t

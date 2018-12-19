@@ -152,10 +152,6 @@ gem 'daemons'
 # unpack file uploads
 gem 'rubyzip', '~> 1.2.2', require: false
 
-# load new rubyzip, but with the old API.
-# TODO: use the new zip api and remove gem zip-zip
-gem 'zip-zip', require: 'zip'
-
 # gnupg for email encryption
 #
 gem 'mail-gpg', '~> 0.3.3'

@@ -13,7 +13,7 @@ module Tracking::Action
     update_user_access: ['Page::History::GrantUserAccess'],
     update_title: ['Page::History::ChangeTitle'],
     update_wiki: ['Page::History::UpdatedContent'],
-    create_star: ['Notice::PostStarredNotice']
+    create_star: ['Notice::PostStarredNotice'] # FIXME: does this really track anything? tracking seems to be page related.
   }.freeze
 
   def self.track(event, options = {})

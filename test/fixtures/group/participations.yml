@@ -55,6 +55,12 @@ rainbow_blue:
   group_id: 3
   access: 1
 
+recentgroup_wiki:
+  id: 47
+  page_id: 210
+  group_id: 33
+  access: 1
+
 rainbow_own_page:
   page_id: 1003
   group_id: 3

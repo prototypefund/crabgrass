@@ -38,7 +38,9 @@ class Group::RequestsController < Group::BaseController
 
   REQUEST_TYPES = {
     destroy_group: 'RequestToDestroyOurGroup',
-    create_council: 'RequestToCreateCouncil'
+    create_council: 'RequestToCreateCouncil',
+    create_group_archive: 'RequestToCreateGroupArchive',
+    create_group_archive_singlepage: 'RequestToCreateGroupArchiveSinglepage'
   }.with_indifferent_access
 
   def requested_class

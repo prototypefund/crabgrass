@@ -1,4 +1,3 @@
----
 en:
   activerecord:
     models:
@@ -24,6 +23,17 @@ en:
   organization: Organization
   organizations: Organizations
   structure: Structure
+
+  ## ARCHIVE
+  archive: Archive
+  archives: Archives
+  archive_info: "Zip file containing all wiki pages and discussion pages in HTML format and all uploaded files of the group, of all committees and of the council (if any).<br/>Shortly after creation, the archive will be available for download for all group admins. (If a council exists, only council members can access the archive.)"
+  single_page_archive: "join pages in one file"
+  one_file_per_page_archive: "one file per page"
+  archive_confirmation: "Are you sure you want to create an archive of %{thing} for download? This action will not delete any content."
+  archive_destroy_confirmation: "Are you sure you want to delete the  archive of %{thing}?"
+  group_archive_created: "An Archive of %{group} has been created by %{user}."
+
 
   ## EMAIL
   group_destroyed_email: "%{group_type} %{group} has been destroyed!"

@@ -21,6 +21,9 @@ Crabgrass::Application.configure do
   ##        empty after the first request.
   config.reload_plugins = false
 
+
+  Delayed::Worker.destroy_failed_jobs = false
+
   ##
   ## CRABGRASS OPTIONS
   ##

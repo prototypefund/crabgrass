@@ -1,0 +1,15 @@
+= formy(:horizontal_form) do |f|
+  - if create_group_archive_link.present?
+    - f.row do |r|
+      - r.label "#{:create.t} #{:archive.t}"
+      - r.input create_group_archive_link
+      - r.input create_group_archive_link(singlepage = true)
+      - r.info I18n.t(:archive_info, group_type: t(@group.group_type.downcase))
+  - if @group.archive
+    - f.row do |r|
+      - r.label "#{:download.t} #{:archive.t}"
+      - r.input download_group_archive_link
+      - r.info "Archived by #{@group.archive.archived_by} on #{friendly_date(@group.archive.updated_at)}"
+    - f.row do |r|
+      - r.label "#{:delete.t} #{:archive.t}"
+      - r.input destroy_group_archive_link

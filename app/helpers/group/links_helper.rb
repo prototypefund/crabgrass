@@ -126,4 +126,50 @@ module Group::LinksHelper
       RequestToRemoveUser
     klass.for_membership(membership).first_or_initialize
   end
+
+  def create_group_archive_link(singlepage = false)
+    if logged_in?
+      if singlepage
+        description = :single_page_archive.t
+      else
+        description = :one_file_per_page_archive.t
+      end
+      if policy(@group).create_archive?
+        link_to description,
+                  group_archive_path(@group, singlepage: singlepage),
+                  method: :post,
+                  action: :new,
+                  class: 'btn btn-primary btn-space',
+                  confirm: :archive_confirmation.t(thing: @group.display_name)
+      elsif may_create?(request_to_create_group_archive)
+        if singlepage
+          link_to description,
+                  group_requests_path(@group, type: 'create_group_archive_singlepage'),
+                  method: 'post',
+                  class: 'btn btn-primary btn-space'
+        else
+          link_to description,
+                  group_requests_path(@group, type: 'create_group_archive'),
+                  method: 'post',
+                  class: 'btn btn-primary btn-space'
+        end
+      end
+    end
+  end
+
+  def request_to_create_group_archive
+    RequestToCreateGroupArchive.new(recipient: @group, requestable: @group)
+  end
+
+  def destroy_group_archive_link
+    if logged_in? && policy(@group).update?
+      button_to :delete.t, group_archive_path(@group), method: :delete, class: 'btn btn-danger'
+   end
+  end
+
+  def download_group_archive_link
+    if logged_in? && policy(@group).show?
+      link_to @group.archive.filename, group_archive_path(@group), class: 'btn btn-primary'
+   end
+  end
 end

@@ -38,28 +38,6 @@ class GalleryController < Page::BaseController
     nil
   end
 
-  def build_asset_data(_assets, file)
-    asset = Asset.create_from_param_with_zip_extraction(file) do |asset|
-      asset.parent_page = @page
-    end
-    asset.each do |a|
-      @assets << a
-      @page.add_image!(a, current_user)
-      a.save!
-    end
-    @assets
-  end
-
-  def build_zip_file_data(_assets, file)
-    zip_assets, failures = Asset.make_from_zip(file)
-    zip_assets.each do |asset|
-      asset.parent_page = @page
-      @assets << asset
-      @page.add_image!(asset, current_user)
-      asset.save!
-    end
-  end
-
   def destroy_page_data
     @assets.compact.each do |asset|
       asset.destroy unless asset.new_record?

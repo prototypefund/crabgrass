@@ -93,6 +93,12 @@ class GroupPolicy < ApplicationPolicy
     may_create_council? or may_create_committee?
   end
 
+  ### Archive permissions
+  #
+  def create_archive?
+    destroy?
+  end
+
   #
   # A group member can create a council for a group during the group's first week,
   # but after that they can only create a request to create a council, which must be approved.

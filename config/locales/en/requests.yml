@@ -50,6 +50,12 @@ en:
   request_to_join_us_via_email:
     one: "Invitation to Join"
     other: "Invitations to Join"
+  request_to_create_group_archive: "Request to create Group Archive for download"
+  request_to_create_group_archive_description: "The user %{user} has proposed to create an archive for %{group_type} %{group}."
+  request_to_create_group_archive_short: "Shall archive of %{group} be created? Creating an archive will not delete any content"
+  request_to_create_group_archive_singlepage: "Request to create Group Archive for download"
+  request_to_create_group_archive_singlepage_description: "The user %{user} has proposed to create an archive for %{group_type} %{group}."
+  request_to_create_group_archive_singlepage_short: "Shall archive of %{group} be created?"
   request_to_create_council: "Request to Create Council"
   request_to_create_council_description: "The user %{user} has proposed to create a council for %{group_type} %{group}."
   request_to_create_council_short: "Shall %{group} have a council?"

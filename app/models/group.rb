@@ -205,6 +205,8 @@ class Group < ApplicationRecord
 
   has_many :wikis, through: :profiles
 
+  has_one :archive, dependent: :destroy
+
   def public_wiki
     public_profile.try.wiki
   end
