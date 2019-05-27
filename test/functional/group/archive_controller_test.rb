@@ -19,51 +19,47 @@ class Group::ArchiveControllerTest < ActionController::TestCase
 
   def test_download_archive
     login_as @user
-    post :create, group_id: :recent_group
-    get :show, group_id: :recent_group
+    post :create, params: { group_id: :recent_group }
+    get :show, params: { group_id: :recent_group }
     assert_response 202 # TODO: download file
   end
 
   def test_show_not_logged_in
-    assert_not_found do
-      get :show, group_id: :recent_group
-    end
+    get :show, params: { group_id: :recent_group }
+    assert_not_found
   end
 
   def test_create_not_logged_in
-    assert_not_found do
-      post :create, group_id: :recent_group
-    end
+    post :create, params: { group_id: :recent_group }
+    assert_not_found
   end
 
   def test_create_archive
     login_as @user
     assert_not @group_archive
-    post :create, group_id: :recent_group
+    post :create, params: { group_id: :recent_group }
     assert @group.archive
     assert_response :redirect
   end
 
   def test_create_archive_not_member
     login_as :red
-    assert_not_found do
-      post :create, group_id: :recent_group
-    end
+    post :create, params: { group_id: :recent_group }
+    assert_not_found
   end
 
   def test_destroy_archive_not_member
     login_as :red
-    assert_not_found do
-      post :create, group_id: :recent_group
-    end
+    post :create, params: { group_id: :recent_group }
+    assert_not_found
   end
 
   def test_increment_version
     login_as @user
-    post :create, group_id: :recent_group
+    post :create, params: { group_id: :recent_group }
     id = Group::Archive.last.id
     version = Group::Archive.last.version
-    post :create, group_id: :recent_group
+    post :create, params: { group_id: :recent_group }
     assert_equal id, Group::Archive.last.id
     assert_equal version+1, Group::Archive.last.version
   end
@@ -76,18 +72,18 @@ class Group::ArchiveControllerTest < ActionController::TestCase
     assert_nil Group::Archive.last.updated_by_id
     login_as @user
     assert_no_difference 'Group::Archive.count' do
-      post :create, group_id: :recent_group
+      post :create, params: { group_id: :recent_group }
       assert_equal @user.id, Group::Archive.last.updated_by_id
     end
   end
 
   def test_destroy_archive
     login_as @user
-    post :create, group_id: :recent_group
+    post :create, params: { group_id: :recent_group }
     assert @group.archive
     sleep 5
     assert_difference 'Group::Archive.count', -1 do
-      post :destroy, group_id: :recent_group
+      post :destroy, params: { group_id: :recent_group }
     end
   end
 

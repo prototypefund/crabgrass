@@ -11,7 +11,8 @@ class Group::ArchiveController < Group::BaseController
 
   def create
     authorize @group, :create_archive?
-    Delayed::Job.enqueue GroupArchiveJob.new(@group, current_user, is_true?(params[:singlepage]))
+    is_singlepage = ActiveModel::Type::Boolean.new.cast(params[:singlepage])
+    Delayed::Job.enqueue GroupArchiveJob.new(@group, current_user, is_singlepage)
     redirect_to group_settings_url(@group)
   end
 
@@ -19,11 +20,6 @@ class Group::ArchiveController < Group::BaseController
     authorize @group, :admin?
     @group.archive.destroy
     redirect_to group_archives_url(@group)
-  end
-
-# TODO: move to helper
-  def is_true?(string)
-      ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(string)
   end
 
 end
