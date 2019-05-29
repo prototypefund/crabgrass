@@ -60,4 +60,9 @@ class RequestToCreateGroupArchive < Request
       group_type: group.group_type.downcase,
       user:       user_span(created_by) }
   end
+
+  def icon_entity
+    group
+  end
+
 end

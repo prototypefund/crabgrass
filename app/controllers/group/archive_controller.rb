@@ -6,13 +6,17 @@ class Group::ArchiveController < Group::BaseController
   def show;
     authorize @group, :admin?
     @archive = @group.archive
+    # TODO: we will have two different zips in the future. The parameter
+    # already exists.
+#    if params[:type] == 'singlepage'
+#      byebug
+#    end
     send_file @archive.stored_zip_file, type: 'application/zip', charset: 'utf-8', status: 202
   end
 
   def create
     authorize @group, :create_archive?
-    is_singlepage = ActiveModel::Type::Boolean.new.cast(params[:singlepage])
-    Delayed::Job.enqueue GroupArchiveJob.new(@group, current_user, is_singlepage)
+    Delayed::Job.enqueue GroupArchiveJob.new(@group, current_user)
     redirect_to group_settings_url(@group)
   end
 

@@ -118,6 +118,10 @@ class Wiki < ApplicationRecord
     read_attribute(:body_html).try.html_safe
   end
 
+  def has_content?
+    !body.blank?
+  end
+
   # will calculate structure if not up to date
   # calculating structure will also update body_html
   def raw_structure

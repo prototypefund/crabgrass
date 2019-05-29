@@ -18,7 +18,6 @@ class ArchiveTest < ActiveSupport::TestCase
     name = 'animals+mycommittee'
     name = name.sub('+', '\\\+')
     html = '<a href="/animals+mycommittee/wiki-page-with-comments">wiki page with comments</a></p><a href="/animals+bla/wiki-page-with-comments">wiki page with comments</a></p>'
-    #regex = /href=\"(\/(animals\+mycommittee\/))([^.\"]*)\"+/
     regex = /href=\"(\/(#{name}\/))([^.\"]*)\"+/
     regex = /href=\"((\/#{name}\/)([^.\"]*))\"+/
     result = html.match(regex)

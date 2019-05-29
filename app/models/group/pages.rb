@@ -44,6 +44,10 @@ module Group::Pages
       pages.where(name: name).first
   end
 
+  def pages_of_type(types)
+    pages_owned.where(type: types).order('type desc').order('updated_at DESC')
+  end
+
   #
   # build or modify a group_participation between a group and a page
   # return the group_participation object, which must be saved for

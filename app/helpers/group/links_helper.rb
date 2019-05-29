@@ -129,30 +129,18 @@ module Group::LinksHelper
 
   def create_group_archive_link(singlepage = false)
     if logged_in?
-      if singlepage
-        description = :single_page_archive.t
-      else
-        description = :one_file_per_page_archive.t
-      end
       if policy(@group).create_archive?
-        link_to description,
-                  group_archive_path(@group, singlepage: singlepage),
+        link_to  :create_a_new_thing.t(thing: :archive.t),
+                  group_archive_path(@group),
                   method: :post,
                   action: :new,
                   class: 'btn btn-primary btn-space',
                   confirm: :archive_confirmation.t(thing: @group.display_name)
       elsif may_create?(request_to_create_group_archive)
-        if singlepage
-          link_to description,
-                  group_requests_path(@group, type: 'create_group_archive_singlepage'),
-                  method: 'post',
-                  class: 'btn btn-primary btn-space'
-        else
-          link_to description,
+          link_to :create_a_new_thing.t(thing: :archive.t),
                   group_requests_path(@group, type: 'create_group_archive'),
                   method: 'post',
                   class: 'btn btn-primary btn-space'
-        end
       end
     end
   end
@@ -167,9 +155,9 @@ module Group::LinksHelper
    end
   end
 
-  def download_group_archive_link
+  def download_group_archive_link type
     if logged_in? && policy(@group).show?
-      link_to @group.archive.filename, group_archive_path(@group), class: 'btn btn-primary'
-   end
+      link_to @group.archive.zipname, group_archive_path(@group, type)
+    end
   end
 end

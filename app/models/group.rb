@@ -154,6 +154,16 @@ class Group < ApplicationRecord
     format('%s (%s)', display_name, name)
   end
 
+  def group_names
+    names = []
+    if self.parent_id
+      names << self.parent.name
+    else
+      names << self.name
+    end
+    names += self.children.pluck(:name) if self.children.any?
+  end
+
   # visual identity
   def banner_style
     @style ||= Style.new(color: '#eef', background_color: '#1B5790')

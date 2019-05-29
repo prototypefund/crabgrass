@@ -65,12 +65,9 @@ class Group::ArchiveControllerTest < ActionController::TestCase
   end
 
   def test_update_archive
-    # TODO: rather load initial archive from fixture
-    # - creating it here requires
-    # Group::Archive.delete_all in test setup
-    Group::Archive.create group: @group, user: @user
-    assert_nil Group::Archive.last.updated_by_id
     login_as @user
+    post :create, params: { group_id: :recent_group }
+    assert_nil Group::Archive.last.updated_by_id
     assert_no_difference 'Group::Archive.count' do
       post :create, params: { group_id: :recent_group }
       assert_equal @user.id, Group::Archive.last.updated_by_id

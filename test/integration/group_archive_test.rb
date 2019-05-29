@@ -5,14 +5,14 @@ class GroupArchiveTest < JavascriptIntegrationTest
   fixtures :users
 
   def setup
-    FileUtils.rm_r(Group::Archive.archive_dir) if File.directory?(Group::Archive.archive_dir)
+    FileUtils.rm_f(Group::Archive.archive_dir)
     Group::Archive.delete_all
     Delayed::Worker.delay_jobs = false
     super
   end
 
   def teardown
-    FileUtils.rm_r(Group::Archive.archive_dir) if File.directory?(Group::Archive.archive_dir)
+    FileUtils.rm_f(Group::Archive.archive_dir)
     Delayed::Worker.delay_jobs = true
     super
   end
@@ -23,7 +23,7 @@ class GroupArchiveTest < JavascriptIntegrationTest
     visit '/recent_group'
     click_on 'Settings'
     click_on 'Archives'
-    click_on 'one file per page'
+    click_on 'Create a new Archive'
     click_on 'OK'
     sleep 2
     click_on 'Archives'
@@ -36,7 +36,7 @@ class GroupArchiveTest < JavascriptIntegrationTest
     visit '/animals'
     click_on 'Settings'
     click_on 'Archives'
-    click_link 'join pages in one file'
+    click_link 'Create a new Archive'
     assert_content 'Request to create Group Archive'
     logout
     @user = users(:penguin)
@@ -47,7 +47,7 @@ class GroupArchiveTest < JavascriptIntegrationTest
     sleep 2
     click_on 'Settings'
     click_on 'Archives'
-    assert_content 'download'
+    assert_content 'animals.zip'
   end
 
   def test_delete_archive
@@ -56,7 +56,7 @@ class GroupArchiveTest < JavascriptIntegrationTest
     visit '/recent_group'
     click_on 'Settings'
     click_on 'Archives'
-    click_on 'one file per page'
+    click_on 'Create a new Archive'
     click_on 'OK'
     click_on 'Archives'
     sleep 2
