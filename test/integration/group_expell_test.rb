@@ -126,7 +126,7 @@ class GroupExpellTest < IntegrationTest
     Time.stub(:now, 2.weeks.from_now) do
       @user = users(:blue)
       page = create_page(owner: groups(:animals), title: 'animals secrets')
-      page.add(users(:kangaroo), star: true, access: :admin)
+      page.add(users(:kangaroo), star: true)
       page.save!
       login
       visit '/animals'
@@ -152,7 +152,7 @@ class GroupExpellTest < IntegrationTest
 
   def test_do_not_list_committee_pages_after_expel
     page = create_page(owner: groups(:cold), title: 'cold colors secrets')
-    page.add(users(:penguin), star: true, access: :admin)
+    page.add(users(:penguin), star: true)
     page.save!
     @user = users(:penguin)
     login
