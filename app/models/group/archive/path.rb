@@ -7,20 +7,19 @@ module Group::Archive::Path
   # directories
 
   def group_archive_dir
-    File.join(ASSET_PRIVATE_STORAGE, 'archive', group.id.to_s)
+    File.join(ASSET_PRIVATE_STORAGE, 'archives', group.id.to_s)
   end
 
   def tmp_dir
     File.join(group_archive_dir, 'tmp')
   end
 
-  def version_dir
-    File.join(group_archive_dir, self.version.to_s)
+  def singlepage_dir
+    File.join(tmp_dir, 'singlepage')
   end
 
-  def next_version_dir
-    next_version = self.version + 1
-    File.join(group_archive_dir, next_version.to_s)
+  def pages_dir
+    File.join(tmp_dir, 'pages')
   end
 
   # paths used in the zip files
@@ -50,12 +49,8 @@ module Group::Archive::Path
     end
   end
 
-  def avatar_path(group)
-    if self.singlepage
-      'assets'
-    else
-      File.join(group_path(group), 'assets')
-    end
+  def asset_dir(group)
+    File.join(group_path(group), 'assets')
   end
 
   def avatar_url_for(group)
@@ -73,7 +68,7 @@ module Group::Archive::Path
   end
 
   def stored_zip_file
-    File.join(version_dir, zipname)
+    File.join(group_archive_dir, zipname)
   end
 
 

@@ -6,12 +6,10 @@ class ArchiveTest < ActiveSupport::TestCase
   def setup
     @group = groups(:recent_group)
     @user = users(:blue)
-    Group:: Archive.delete_all
-    FileUtils.rm_r(Group::Archive.archive_dir) if File.directory?(Group::Archive.archive_dir)
   end
 
-  def teardown
-    FileUtils.rm_r(Group::Archive.archive_dir) if File.directory?(Group::Archive.archive_dir)
+  def zip_archive_file group # FIXME: use paths defined in methods
+    File.join(ASSET_PRIVATE_STORAGE, 'archives', group.id.to_s, "#{group.name}.zip")
   end
 
   def test_regex
@@ -27,34 +25,30 @@ class ArchiveTest < ActiveSupport::TestCase
     assert_equal "wiki-page-with-comments", $3
   end
 
+  # TODO: test zip creation
   def test_create_archive
-    a = Group::Archive.find_or_create(group: @group, user: @user)
-    assert_equal 'success', a.state
+    a = Group::Archive.create! group: @group, created_by_id: @user.id
+#    assert_equal 'success', a.state
     assert a.created_by_id, @user.id
     assert @group.id, a.group.id
   end
 
   def test_missing_group_param
-    g = Group::Archive.create(user: @user)
-    assert !g.valid?, 'archive without group should not be valid'
-  end
-
-  def test_initial_version
-    a = Group::Archive.find_or_create(group: @group, user: @user)
-    assert_equal 'success', a.state
-    assert_equal 1, a.version
+    assert_raises ActiveRecord::RecordInvalid do
+      Group::Archive.create! created_by_id: @user.id
+    end
   end
 
   def test_archive_file_exists
-    a = Group::Archive.create group: @group, user: @user
-    assert_equal 'success', a.state
-    assert true, File.file?(a.stored_zip_file)
+    a = Group::Archive.create! group: @group, created_by_id: @user.id
+    #assert_equal 'success', a.state
+    assert true, File.file?(zip_archive_file(@group))
   end
 
   def test_zip_archive
-    a = Group::Archive.find_or_create(group: @group, user: @user)
-    assert_equal 'success', a.state
-    Zip::File.open(a.stored_zip_file) do |zip_file|
+    a = Group::Archive.create! group: @group, created_by_id: @user.id
+    #assert_equal 'success', a.state
+    Zip::File.open(zip_archive_file(@group)) do |zip_file|
       assert true, zip_file.collect(&:name).include?("recent_group/test-wiki+210.html")
       zip_file.each do |entry|
         if entry.name == "recent_group/test-wiki+210.html"

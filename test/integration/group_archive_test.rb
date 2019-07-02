@@ -6,13 +6,11 @@ class GroupArchiveTest < JavascriptIntegrationTest
 
   def setup
     FileUtils.rm_f(Group::Archive.archive_dir)
-    Group::Archive.delete_all
     Delayed::Worker.delay_jobs = false
     super
   end
 
   def teardown
-    FileUtils.rm_f(Group::Archive.archive_dir)
     Delayed::Worker.delay_jobs = true
     super
   end
