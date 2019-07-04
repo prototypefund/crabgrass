@@ -14,7 +14,7 @@ class Group::Archive < ActiveRecord::Base
 
   belongs_to :group
   validates :group, presence: true # do we need this?
-  after_validation :process
+  after_validation :process # Todo: replace with before_save + do not store pending archive.
   before_destroy :delete_group_archive_dir
 
   ARCHIVED_TYPES = %w[WikiPage DiscussionPage AssetPage Gallery]
@@ -49,6 +49,7 @@ class Group::Archive < ActiveRecord::Base
       #gen = Group::Archive::PagesGenerator.new(group: group, types: ARCHIVED_TYPES)
       gen.generate
       self.state = SUCCESS
+      self.save!
     rescue Exception => exc
       Rails.logger.error 'Archive could not be created: ' + exc.message
     end

@@ -7,11 +7,12 @@ class Group::ArchiveControllerTest < ActionController::TestCase
   def setup
     @user = users(:blue)
     @group = groups(:recent_group)
-    FileUtils.rm_f(Group::Archive.archive_dir)
+    FileUtils.rm_rf(ASSET_PRIVATE_STORAGE)
     Delayed::Worker.delay_jobs = false
   end
 
   def teardown
+    FileUtils.rm_rf(ASSET_PRIVATE_STORAGE)
     Delayed::Worker.delay_jobs = true
   end
 

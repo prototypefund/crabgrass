@@ -2,8 +2,6 @@ class Group::Archive::SinglepageGenerator
 
   include Group::Archive::Path
 
-  # FIXME: move to superclass
-
   def initialize(opts = {})
     @group = opts[:group]
     @pages = opts[:pages]
@@ -17,19 +15,17 @@ class Group::Archive::SinglepageGenerator
 
   protected
 
-  attr_reader :group
-
   def prepare_files
     create_dirs
     add_group_content
-    group.committees.each do |committee|
+    @group.committees.each do |committee|
       add_group_content(committee)
     end
   end
 
-  def add_group_content(mygroup = group)
-    add_pages(mygroup)
-    add_avatar(mygroup)
+  def add_group_content(group = @group)
+    add_pages(group)
+    add_avatar(group)
   end
 
   def create_zip_file
@@ -41,6 +37,10 @@ class Group::Archive::SinglepageGenerator
     group.pages_of_type(types)
   end
 
+  def group_names
+    @group.group_names
+  end
+
   # singlepage specific stuff ?
 
   def create_dirs
@@ -48,7 +48,8 @@ class Group::Archive::SinglepageGenerator
     FileUtils.mkdir_p(tmp_dir)
     FileUtils.mkdir_p(singlepage_dir) unless File.exists?(singlepage_dir)
     FileUtils.mkdir_p(File.join(singlepage_dir, 'assets')) unless File.exists?(File.join(singlepage_dir, 'assets'))
-    FileUtils.mkdir_p(pages_dir) unless File.exists?(pages_dir)
+    #FileUtils.mkdir_p(pages_dir) unless File.exists?(pages_dir) # FIXME
+    #remove
   end
 
   def add_pages(group)
@@ -77,11 +78,12 @@ class Group::Archive::SinglepageGenerator
     @toc << "<p><a href=\##{page.id}>#{page.title}</a></p>"
     template = File.read('app/views/group/archives/page.html.haml')
     haml_engine = Haml::Engine.new(template)
+    # FIXME: link stuff not working yet.
     if page.type == 'WikiPage'
       wiki_html = nil ||page.wiki.body_html.gsub('/asset', 'asset')
-      haml_engine.to_html Object.new, wiki_html: fix_links(group.name, wiki_html), group: group, page: page
+      haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page
     else
-      haml_engine.to_html Object.new, group: group, page: page, wiki_html: nil
+      haml_engine.to_html Object.new, group: page.owner, page: page, wiki_html: nil
     end
   end
 
@@ -93,13 +95,14 @@ class Group::Archive::SinglepageGenerator
     end
   end
 
-  def add_asset(asset, group = nil)
-    return unless asset.is_a? Asset
+  def add_asset(asset, group = @group)
+    return unless asset.is_a? Asset # page.assets also contains wikis!
     begin
       asset_id = asset.id.to_s
-      FileUtils.cp File.join(asset_path(asset_id, group), asset.filename.gsub(' ', '+')), asset.private_filename
+      FileUtils.mkdir(asset_path(asset_id)) unless File.exists?(asset_path(asset_id))
+      FileUtils.cp asset.private_filename, File.join(asset_path(asset_id), asset.filename.gsub(' ', '+'))
       asset.thumbnails.each do |thumbnail|
-        FileUtils.cp File.join(asset_path(asset_id, group), thumbnail.filename.gsub(' ', '+')), thumbnail.private_filename
+        FileUtils.cp thumbnail.private_filename, File.join(asset_path(asset_id), thumbnail.filename.gsub(' ', '+'))
       end
     rescue Errno::ENOENT => error
       Rails.logger.error 'Asset file missing: ' + error.message
@@ -111,10 +114,14 @@ class Group::Archive::SinglepageGenerator
   end
 
   def fix_links(group_name, html)
-    group_names = group.group_names
     group_names.each do |searched_name|
       res = html.match(/href=\"((\/#{searched_name}\/)([^.\"]*))\"+/)
       if res
+        # FIXME: not sure if it works for committees (or if it works at
+        # all)
+        # href=\"/rainbow+the-warm-colors/warm-wiki-page\
+
+
         #<MatchData "href=\"/animals/wiki-page-with-comments\""
         #1:"/animals/wiki-page-with-comments"
         #2:"/animals/"
@@ -122,8 +129,6 @@ class Group::Archive::SinglepageGenerator
         full_match = $1
         group_match = $2
         page_match = $3
-
-        # TODO: link to pages in other (public) groups
         if searched_name == group_name # link to same group
           html = html.gsub(full_match, page_anchor(page_match))
         else

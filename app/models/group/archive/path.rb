@@ -6,7 +6,7 @@ module Group::Archive::Path
 
   # directories
 
-  def group_archive_dir
+  def group_archive_dir(group = @group)
     File.join(ASSET_PRIVATE_STORAGE, 'archives', group.id.to_s)
   end
 
@@ -18,17 +18,19 @@ module Group::Archive::Path
     File.join(tmp_dir, 'singlepage')
   end
 
+  # TODO: rename - it is not clear that this is for pages_html and not
+  # for singlepages
   def pages_dir
     File.join(tmp_dir, 'pages')
   end
 
-  # paths used in the zip files
+  # for pages_zip only
 
   def group_path(group)
     if !group.parent_id
-      group.name
+      File.join(pages_dir, group.name)
     else
-      File.join(group.parent.name, group.name)
+      File.join(pages_dir, group.parent.name, group.name)
     end
   end
 
@@ -42,19 +44,20 @@ module Group::Archive::Path
   end
 
   def asset_path(asset_id, group)
-    if group
       File.join(group_path(group), 'assets', asset_id)
-    else
-      File.join('assets', asset_id)
-    end
   end
 
-  def asset_dir(group)
+  def asset_dir(group = @group)
     File.join(group_path(group), 'assets')
   end
 
   def avatar_url_for(group)
     format("#{APP_ROOT}/public/avatars/%s/large.jpg", group.avatar_id || 0)
+  end
+
+  # for singlepage - TODO: rename.
+  def asset_path(asset_id)
+    File.join(singlepage_dir, 'assets', asset_id)
   end
 
   # Filenames
@@ -64,12 +67,11 @@ module Group::Archive::Path
   end
 
   def zipname
-    "#{group.name}.zip"
+    "#{@group.name}.zip"
   end
 
   def stored_zip_file
     File.join(group_archive_dir, zipname)
   end
-
 
 end

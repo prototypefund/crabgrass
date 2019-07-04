@@ -162,6 +162,7 @@ class Group < ApplicationRecord
       names << self.name
     end
     names += self.children.pluck(:name) if self.children.any?
+    return names
   end
 
   # visual identity

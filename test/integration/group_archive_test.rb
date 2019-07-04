@@ -5,12 +5,15 @@ class GroupArchiveTest < JavascriptIntegrationTest
   fixtures :users
 
   def setup
-    FileUtils.rm_f(Group::Archive.archive_dir)
+    # TODO: set special storage path for tests.
+    FileUtils.rm_rf(ASSET_PRIVATE_STORAGE) # this removes all storage!
+    Group::Archive.delete_all # FIXME: we should not need this!
     Delayed::Worker.delay_jobs = false
     super
   end
 
   def teardown
+    FileUtils.rm_rf(ASSET_PRIVATE_STORAGE) # FIXME: change this!
     Delayed::Worker.delay_jobs = true
     super
   end
