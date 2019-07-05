@@ -1,5 +1,4 @@
 class Group::Archive::SinglepageGenerator
-
   include Group::Archive::Path
 
   def initialize(opts = {})
@@ -9,8 +8,8 @@ class Group::Archive::SinglepageGenerator
   end
 
   def generate
-    self.prepare_files
-    self.create_zip_file
+    prepare_files
+    create_zip_file
   end
 
   protected
@@ -30,7 +29,7 @@ class Group::Archive::SinglepageGenerator
 
   def create_zip_file
     zf = ::ZipFileGenerator.new(singlepage_dir, stored_zip_file)
-    zf.write()
+    zf.write
   end
 
   def group_pages(group)
@@ -46,17 +45,17 @@ class Group::Archive::SinglepageGenerator
   def create_dirs
     FileUtils.rm_f(tmp_dir)
     FileUtils.mkdir_p(tmp_dir)
-    FileUtils.mkdir_p(singlepage_dir) unless File.exists?(singlepage_dir)
-    FileUtils.mkdir_p(File.join(singlepage_dir, 'assets')) unless File.exists?(File.join(singlepage_dir, 'assets'))
-    #FileUtils.mkdir_p(pages_dir) unless File.exists?(pages_dir) # FIXME
-    #remove
+    FileUtils.mkdir_p(singlepage_dir) unless File.exist?(singlepage_dir)
+    FileUtils.mkdir_p(File.join(singlepage_dir, 'assets')) unless File.exist?(File.join(singlepage_dir, 'assets'))
+    # FileUtils.mkdir_p(pages_dir) unless File.exists?(pages_dir) # FIXME
+    # remove
   end
 
   def add_pages(group)
     @toc = []
     pages = group_pages(group)
-    return unless pages.size > 0
-    content = ""
+    return if pages.empty?
+    content = ''
     pages.each do |page|
       content = append_to_singlepage(page, content)
     end
@@ -66,12 +65,12 @@ class Group::Archive::SinglepageGenerator
   end
 
   def append_to_singlepage(page, content)
-    content +=  page_content(page)
+    content += page_content(page)
     page.assets.each do |attachment|
       add_asset(attachment)
     end
     add_asset(page.data)
-    return content
+    content
   end
 
   def page_content(page)
@@ -80,7 +79,7 @@ class Group::Archive::SinglepageGenerator
     haml_engine = Haml::Engine.new(template)
     # FIXME: link stuff not working yet.
     if page.type == 'WikiPage'
-      wiki_html = nil ||page.wiki.body_html.gsub('/asset', 'asset')
+      wiki_html = nil || page.wiki.body_html.gsub('/asset', 'asset')
       haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page
     else
       haml_engine.to_html Object.new, group: page.owner, page: page, wiki_html: nil
@@ -88,21 +87,19 @@ class Group::Archive::SinglepageGenerator
   end
 
   def add_avatar(group)
-    begin
-      FileUtils.cp avatar_url_for(group), File.join(singlepage_dir, 'assets', "#{group.name}.jpg")
-    rescue Errno::ENOENT => error
-      Rails.logger.error 'Avatar file missing: ' + error.message
-    end
+    FileUtils.cp avatar_url_for(group), File.join(singlepage_dir, 'assets', "#{group.name}.jpg")
+  rescue Errno::ENOENT => error
+    Rails.logger.error 'Avatar file missing: ' + error.message
   end
 
-  def add_asset(asset, group = @group)
+  def add_asset(asset, _group = @group)
     return unless asset.is_a? Asset # page.assets also contains wikis!
     begin
       asset_id = asset.id.to_s
-      FileUtils.mkdir(asset_path(asset_id)) unless File.exists?(asset_path(asset_id))
-      FileUtils.cp asset.private_filename, File.join(asset_path(asset_id), asset.filename.gsub(' ', '+'))
+      FileUtils.mkdir(asset_path(asset_id)) unless File.exist?(asset_path(asset_id))
+      FileUtils.cp asset.private_filename, File.join(asset_path(asset_id), asset.filename.tr(' ', '+'))
       asset.thumbnails.each do |thumbnail|
-        FileUtils.cp thumbnail.private_filename, File.join(asset_path(asset_id), thumbnail.filename.gsub(' ', '+'))
+        FileUtils.cp thumbnail.private_filename, File.join(asset_path(asset_id), thumbnail.filename.tr(' ', '+'))
       end
     rescue Errno::ENOENT => error
       Rails.logger.error 'Asset file missing: ' + error.message
@@ -116,28 +113,26 @@ class Group::Archive::SinglepageGenerator
   def fix_links(group_name, html)
     group_names.each do |searched_name|
       res = html.match(/href=\"((\/#{searched_name}\/)([^.\"]*))\"+/)
-      if res
-        # FIXME: not sure if it works for committees (or if it works at
-        # all)
-        # href=\"/rainbow+the-warm-colors/warm-wiki-page\
+      next unless res
+      # FIXME: not sure if it works for committees (or if it works at
+      # all)
+      # href=\"/rainbow+the-warm-colors/warm-wiki-page\
 
-
-        #<MatchData "href=\"/animals/wiki-page-with-comments\""
-        #1:"/animals/wiki-page-with-comments"
-        #2:"/animals/"
-        #3:"wiki-page-with-comments"
-        full_match = $1
-        group_match = $2
-        page_match = $3
-        if searched_name == group_name # link to same group
-          html = html.gsub(full_match, page_anchor(page_match))
-        else
-          fixed_link = searched_name + '.html' + page_anchor(page_match)
-          html = html.gsub(full_match, fixed_link)
-        end
+      # <MatchData "href=\"/animals/wiki-page-with-comments\""
+      # 1:"/animals/wiki-page-with-comments"
+      # 2:"/animals/"
+      # 3:"wiki-page-with-comments"
+      full_match = Regexp.last_match(1)
+      group_match = Regexp.last_match(2)
+      page_match = Regexp.last_match(3)
+      if searched_name == group_name # link to same group
+        html = html.gsub(full_match, page_anchor(page_match))
+      else
+        fixed_link = searched_name + '.html' + page_anchor(page_match)
+        html = html.gsub(full_match, fixed_link)
       end
     end
-    return html
+    html
   end
 
   def toc_html(group)
@@ -147,10 +142,11 @@ class Group::Archive::SinglepageGenerator
     @toc.each do |entry|
       toc_html << entry
     end
-    return toc_html
+    toc_html
   end
 
   private
+
   attr_reader :types
   attr_writer :toc
 end

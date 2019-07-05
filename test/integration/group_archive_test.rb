@@ -64,5 +64,4 @@ class GroupArchiveTest < JavascriptIntegrationTest
     click_on 'Delete'
     assert_no_content 'Delete'
   end
-
 end

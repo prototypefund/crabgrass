@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class Group::ArchiveControllerTest < ActionController::TestCase
-
   fixtures :users, :groups
 
   def setup
@@ -62,5 +61,4 @@ class Group::ArchiveControllerTest < ActionController::TestCase
       post :destroy, params: { group_id: :recent_group }
     end
   end
-
 end

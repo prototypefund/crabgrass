@@ -11,13 +11,12 @@ require 'zipfilegenerator'
 #
 
 class Group::Archive < ActiveRecord::Base
-
   belongs_to :group
   validates :group, presence: true # do we need this?
-  after_validation :process # Todo: replace with before_save + do not store pending archive.
+  after_validation :process # TODO: replace with before_save + do not store pending archive.
   before_destroy :delete_group_archive_dir
 
-  ARCHIVED_TYPES = %w[WikiPage DiscussionPage AssetPage Gallery]
+  ARCHIVED_TYPES = %w[WikiPage DiscussionPage AssetPage Gallery].freeze
   PENDING = 'pending'.freeze
   SUCCESS = 'success'.freeze
 
@@ -39,20 +38,18 @@ class Group::Archive < ActiveRecord::Base
   end
 
   def stored_zip_file
-     File.join(group_archive_dir, zipname)
+    File.join(group_archive_dir, zipname)
   end
 
   def process
-    begin
-      self.state = PENDING
-      gen = Group::Archive::SinglepageGenerator.new(group: group, types: ARCHIVED_TYPES)
-      #gen = Group::Archive::PagesGenerator.new(group: group, types: ARCHIVED_TYPES)
-      gen.generate
-      self.state = SUCCESS
-      self.save!
-    rescue Exception => exc
-      Rails.logger.error 'Archive could not be created: ' + exc.message
-    end
+    self.state = PENDING
+    gen = Group::Archive::SinglepageGenerator.new(group: group, types: ARCHIVED_TYPES)
+    # gen = Group::Archive::PagesGenerator.new(group: group, types: ARCHIVED_TYPES)
+    gen.generate
+    self.state = SUCCESS
+    save!
+  rescue Exception => exc
+    Rails.logger.error 'Archive could not be created: ' + exc.message
   end
 
   def archived_by
@@ -61,9 +58,7 @@ class Group::Archive < ActiveRecord::Base
 
   protected
 
-
   def delete_group_archive_dir
     FileUtils.rm_f(group_archive_dir)
   end
-
 end

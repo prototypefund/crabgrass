@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class Group::ArchivesControllerTest < ActionController::TestCase
-
   fixtures :users, :groups
 
   def setup
@@ -26,5 +25,4 @@ class Group::ArchivesControllerTest < ActionController::TestCase
     get :index, params: { group_id: @group.to_param }
     assert_not_found
   end
-
 end

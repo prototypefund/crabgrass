@@ -3,7 +3,6 @@
 #
 
 module Group::Archive::Path
-
   # directories
 
   def group_archive_dir(group = @group)
@@ -35,7 +34,7 @@ module Group::Archive::Path
   end
 
   def index_path(group)
-    File.join(group_path(group), "index.html")
+    File.join(group_path(group), 'index.html')
   end
 
   def file_path(page, group)
@@ -44,7 +43,7 @@ module Group::Archive::Path
   end
 
   def asset_path(asset_id, group)
-      File.join(group_path(group), 'assets', asset_id)
+    File.join(group_path(group), 'assets', asset_id)
   end
 
   def asset_dir(group = @group)
@@ -73,5 +72,4 @@ module Group::Archive::Path
   def stored_zip_file
     File.join(group_archive_dir, zipname)
   end
-
 end
