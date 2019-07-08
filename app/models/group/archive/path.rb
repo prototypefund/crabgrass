@@ -54,8 +54,7 @@ module Group::Archive::Path
     format("#{APP_ROOT}/public/avatars/%s/large.jpg", group.avatar_id || 0)
   end
 
-  # for singlepage - TODO: rename.
-  def asset_path(asset_id)
+  def asset_path_singlepage(asset_id)
     File.join(singlepage_dir, 'assets', asset_id)
   end
 
@@ -65,11 +64,20 @@ module Group::Archive::Path
     File.join(tmp_dir, zipname)
   end
 
-  def zipname
+  def zipname_suffix
     "#{@group.name}.zip"
   end
 
-  def stored_zip_file
-    File.join(group_archive_dir, zipname)
+  def zipname(type)
+    if type == 'singlepage'
+      'singlepage_' + zipname_suffix
+    else
+      'pages_' + zipname_suffix
+    end
   end
+
+  def stored_zip_file(type)
+    File.join(group_archive_dir, zipname(type))
+  end
+
 end

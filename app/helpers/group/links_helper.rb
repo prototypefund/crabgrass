@@ -145,6 +145,10 @@ module Group::LinksHelper
     end
   end
 
+  def reload_archive_page_link
+    link_to :group_archive_settings_reload.t, group_archives_path(@group)
+  end
+
   def request_to_create_group_archive
     RequestToCreateGroupArchive.new(recipient: @group, requestable: @group)
   end
@@ -155,9 +159,10 @@ module Group::LinksHelper
    end
   end
 
-  def download_group_archive_link type
+  def download_group_archive_link(params)
+    return unless ['singlepage', 'pages'].include? params[:type]
     if logged_in? && policy(@group).show?
-      link_to @group.archive.zipname, group_archive_path(@group, type)
+      link_to @group.archive.zipname(params[:type]), group_archive_path(@group, params)
     end
   end
 end

@@ -1,7 +1,9 @@
 GroupArchiveJob = Struct.new(:group, :user) do
 
+  # TODO: handle failure
+
   def perform()
-    Group::Archive.create!(group: group, created_by_id: user.id)
+    Group::Archive.new(group: group, user: user).process
   end
 
 end

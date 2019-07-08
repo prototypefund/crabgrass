@@ -36,6 +36,7 @@ class ZipFileGenerator
     entries.each do |e|
       zipfile_path = path == '' ? e : File.join(path, e)
       disk_file_path = File.join(@input_dir, zipfile_path)
+      return if zipfile.find_entry(e) # added by dgt. should not be needed
 
       if File.directory? disk_file_path
         recursively_deflate_directory(disk_file_path, zipfile, zipfile_path)
@@ -46,7 +47,7 @@ class ZipFileGenerator
   end
 
   def recursively_deflate_directory(disk_file_path, zipfile, zipfile_path)
-    zipfile.mkdir zipfile_path unless File.exists? zipfile_path # check added by dgt.
+    zipfile.mkdir zipfile_path
     subdir = Dir.entries(disk_file_path) - %w[. ..]
     write_entries subdir, zipfile_path, zipfile
   end

@@ -1,23 +1,27 @@
 = formy(:horizontal_form) do |f|
-  - if @group.archive
-    - f.row do |r| # FIXME: create both types of archives
-      - r.label "#{:download.t} #{:archive.t}"
-      - r.input link_line(download_group_archive_link(type: :singlepage), :single_page_archive.t)
-      - r.input link_line(download_group_archive_link(type: :files), :one_file_per_page_archive.t)
-      - r.info "Archived by #{@group.archive.archived_by} on #{friendly_date(@group.archive.updated_at)}"
+  - if archive = @group.archive
+    - if archive.pending?
+      - f.row do |r|
+        - r.label "#{:download.t} #{:archive.t}"
+        - r.info :group_archive_pending.t
+        - r.input reload_archive_page_link
+    - else
+      - f.row do |r|
+        - r.label "#{:download.t} #{:archive.t}"
+        - r.input link_line(download_group_archive_link(type: 'singlepage'), :single_page_archive.t)
+        - r.input link_line(download_group_archive_link(type: 'pages'), :one_file_per_page_archive.t)
+        - r.info "Archived by #{archive.archived_by} on #{friendly_date(archive.updated_at)}"
+      - f.row do |r|
+        - r.label "#{:delete.t} #{:archive.t}"
+        - r.input destroy_group_archive_link
   - else
     - if @request
       - f.row do |r|
         - r.label "#{:create.t} #{:archive.t}"
         - r.input link_to(:request_pending.t(request: :request_to_create_group_archive.t.capitalize), group_request_path(@group, @request))
         - r.info I18n.t(:archive_info, group_type: t(@group.group_type.downcase))
-    - else
-      - if create_group_archive_link.present?
-        - f.row do |r|
-          - r.label "#{:create.t} #{:archive.t}"
-          - r.input create_group_archive_link
-          - r.info I18n.t(:archive_info, group_type: t(@group.group_type.downcase))
-  - if @group.archive
-    - f.row do |r|
-      - r.label "#{:delete.t} #{:archive.t}"
-      - r.input destroy_group_archive_link
+    - elsif create_group_archive_link.present?
+      - f.row do |r|
+        - r.label "#{:create.t} #{:archive.t}"
+        - r.input create_group_archive_link
+        - r.info I18n.t(:archive_info, group_type: t(@group.group_type.downcase))

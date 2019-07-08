@@ -30,7 +30,7 @@ class Group::Archive::PagesGenerator
   end
 
   def create_zip_file
-    zf = ::ZipFileGenerator.new(pages_dir, stored_zip_file)
+    zf = ::ZipFileGenerator.new(pages_dir, stored_zip_file('pages'))
     zf.write
   end
 
@@ -101,7 +101,6 @@ class Group::Archive::PagesGenerator
     return unless asset.is_a? Asset
     begin
       asset_id = asset.id.to_s
-      byebug
       FileUtils.mkdir(asset_path(asset_id, group)) unless File.exist?(asset_path(asset_id, group))
       FileUtils.cp asset.private_filename, File.join(asset_path(asset_id, group), asset.filename.tr(' ', '+'))
       asset.thumbnails.each do |thumbnail|

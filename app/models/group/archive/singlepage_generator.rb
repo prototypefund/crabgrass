@@ -2,6 +2,7 @@ class Group::Archive::SinglepageGenerator
   include Group::Archive::Path
 
   def initialize(opts = {})
+    @user = opts[:user]
     @group = opts[:group]
     @pages = opts[:pages]
     @types = opts[:types]
@@ -28,7 +29,7 @@ class Group::Archive::SinglepageGenerator
   end
 
   def create_zip_file
-    zf = ::ZipFileGenerator.new(singlepage_dir, stored_zip_file)
+    zf = ::ZipFileGenerator.new(singlepage_dir, stored_zip_file('singlepage'))
     zf.write
   end
 
@@ -57,7 +58,7 @@ class Group::Archive::SinglepageGenerator
     return if pages.empty?
     content = ''
     pages.each do |page|
-      content = append_to_singlepage(page, content)
+      content = append_to_singlepage(page, content) if @user.may?(:admin, page)
     end
     return unless content
     content = toc_html(group) + content
@@ -96,10 +97,10 @@ class Group::Archive::SinglepageGenerator
     return unless asset.is_a? Asset # page.assets also contains wikis!
     begin
       asset_id = asset.id.to_s
-      FileUtils.mkdir(asset_path(asset_id)) unless File.exist?(asset_path(asset_id))
-      FileUtils.cp asset.private_filename, File.join(asset_path(asset_id), asset.filename.tr(' ', '+'))
+      FileUtils.mkdir(asset_path_singlepage(asset_id)) unless File.exist?(asset_path_singlepage(asset_id))
+      FileUtils.cp asset.private_filename, File.join(asset_path_singlepage(asset_id), asset.filename.tr(' ', '+'))
       asset.thumbnails.each do |thumbnail|
-        FileUtils.cp thumbnail.private_filename, File.join(asset_path(asset_id), thumbnail.filename.tr(' ', '+'))
+        FileUtils.cp thumbnail.private_filename, File.join(asset_path_singlepage(asset_id), thumbnail.filename.tr(' ', '+'))
       end
     rescue Errno::ENOENT => error
       Rails.logger.error 'Asset file missing: ' + error.message
