@@ -6,6 +6,9 @@ class Group::ArchivesControllerTest < ActionController::TestCase
   def setup
     @user = users(:blue)
     @group = groups(:recent_group)
+    # FIXME: we should not need this. Deleting records in teardown
+    # of ArchiveControllerTest does not work properly
+    Group::Archive.delete_all
   end
 
   def test_access_archive_page

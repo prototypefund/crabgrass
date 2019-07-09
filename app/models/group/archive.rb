@@ -13,16 +13,13 @@ require 'zipfilegenerator'
 class Group::Archive < ActiveRecord::Base
   belongs_to :group
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id' # not sure if we need this
-  validates_presence_of :group, :user
+  validates_presence_of :group, :created_by_id
   before_destroy :delete_group_archive_dir
 
   ARCHIVED_TYPES = %w[WikiPage DiscussionPage AssetPage Gallery].freeze
 
   PENDING = 'pending'.freeze # TODO: replace by enum (maybe add expired state)
   SUCCESS = 'success'.freeze
-
-  attr_accessor :user
-
 
   # TODO: check if we can use Group::Archive::Path instead
 
@@ -57,25 +54,23 @@ class Group::Archive < ActiveRecord::Base
   end
 
   def process
-    return false unless self.valid?
-    self.created_by_id = user.id
-    self.state = PENDING
-    save!
+    # TODO: check if we can move this to the Job
+    return false unless valid?
     delete_old_archive
-    Group::Archive::SinglepageGenerator.new(user: user, group: group, types: ARCHIVED_TYPES).generate
-    Group::Archive::PagesGenerator.new(user: user, group: group, types: ARCHIVED_TYPES).generate
-    self.state = SUCCESS
+    Group::Archive::SinglepageGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES).generate
+    Group::Archive::PagesGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES).generate
     self.filename = zipname_suffix
+    self.state = SUCCESS
     save!
   rescue Exception => exc
-    byebug
     Rails.logger.error 'Archive could not be created: ' + exc.message
+    # TODO: we might want to delete the pending archive in case of error
   ensure
     move_tmp_dir_to_old if group
   end
 
   def archived_by
-    User.find_by_id(created_by_id).login
+    created_by.login
   end
 
   protected

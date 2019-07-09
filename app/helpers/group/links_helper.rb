@@ -127,13 +127,12 @@ module Group::LinksHelper
     klass.for_membership(membership).first_or_initialize
   end
 
-  def create_group_archive_link(singlepage = false)
+  def create_group_archive_link
     if logged_in?
       if policy(@group).create_archive?
         link_to  :create_a_new_thing.t(thing: :archive.t),
                   group_archive_path(@group),
                   method: :post,
-                  action: :new,
                   class: 'btn btn-primary btn-space',
                   confirm: :archive_confirmation.t(thing: @group.display_name)
       elsif may_create?(request_to_create_group_archive)

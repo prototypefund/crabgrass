@@ -13,6 +13,7 @@ class Group::ArchiveControllerTest < ActionController::TestCase
   def teardown
     FileUtils.rm_rf(ASSET_PRIVATE_STORAGE)
     Delayed::Worker.delay_jobs = true
+    Group::Archive.delete_all # FIXME: not working
   end
 
   def test_download_archive
@@ -56,7 +57,6 @@ class Group::ArchiveControllerTest < ActionController::TestCase
     login_as @user
     post :create, params: { group_id: :recent_group }
     assert @group.archive
-    sleep 5
     assert_difference 'Group::Archive.count', -1 do
       post :destroy, params: { group_id: :recent_group }
     end

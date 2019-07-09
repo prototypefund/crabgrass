@@ -8,8 +8,8 @@ class ArchiveTest < ActiveSupport::TestCase
   end
 
   # FIXME: use paths defined in model
-  def zip_archive_file(group)
-    File.join(ASSET_PRIVATE_STORAGE, 'archives', group.id.to_s, "#{group.name}.zip")
+  def singlepage_zip(group)
+    File.join(ASSET_PRIVATE_STORAGE, 'archives', group.id.to_s, "singlepage_#{group.name}.zip")
   end
 
   def test_regex
@@ -26,29 +26,29 @@ class ArchiveTest < ActiveSupport::TestCase
 
   # TODO: test zip creation
   def test_create_archive
-    a = Group::Archive.new group: @group, user: @user
-    assert_equal @user, a.user
+    a = Group::Archive.create! group: @group, created_by: @user
+    assert_equal @user.id, a.created_by_id
     assert_equal @group, a.group
+    assert_equal 'pending', a.state
   end
 
   def test_missing_group_param
-    a = Group::Archive.new user: @user
-    assert !a.valid?, 'archive without group should be invalid'
-    assert_equal false, a.process
+    assert_raises ActiveRecord::RecordInvalid do
+      Group::Archive.create! created_by_id: @user.id
+    end
   end
 
-  # FIXME: not used anymore because zip creation is not triggered by
-  # new but by GroupArchiveJob's process method. We have to test the job instead.
-  def archive_file_exists
-    a = Group::Archive.new group: @group, user: @user
-    assert_equal true, File.file?(zip_archive_file(@group))
+  def test_archive_file_exists
+    a = Group::Archive.create! group: @group, created_by: @user
+    a.process
+    assert_equal true, File.file?(singlepage_zip(@group))
   end
 
-  # FIXME: same here
-  def zip_archive
-    Group::Archive.new group: @group, user: @user
-    Zip::File.open(zip_archive_file(@group)) do |zip_file|
-      assert_true zip_file.collect(&:name).include?('recent_group/test-wiki+210.html')
+  def test_zip_archive
+    a = Group::Archive.create! group: @group, created_by: @user
+    a.process
+    Zip::File.open(singlepage_zip(@group)) do |zip_file|
+      zip_file.collect(&:name).include?('recent_group/test-wiki+210.html')
       zip_file.each do |entry|
         if entry.name == 'recent_group/test-wiki+210.html'
           content = entry.get_input_stream.read
