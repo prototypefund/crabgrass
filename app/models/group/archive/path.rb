@@ -6,7 +6,7 @@ module Group::Archive::Path
   # directories
 
   def group_archive_dir(group = @group)
-    File.join(ASSET_PRIVATE_STORAGE, 'archives', group.id.to_s)
+    File.join(ARCHIVE_STORAGE, group.id.to_s)
   end
 
   def tmp_dir

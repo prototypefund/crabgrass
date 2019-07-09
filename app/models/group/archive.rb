@@ -11,6 +11,7 @@ require 'zipfilegenerator'
 #
 
 class Group::Archive < ActiveRecord::Base
+  include Group::Archive::Path
   belongs_to :group
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id' # not sure if we need this
   validates_presence_of :group, :created_by_id
@@ -21,33 +22,15 @@ class Group::Archive < ActiveRecord::Base
   PENDING = 'pending'.freeze # TODO: replace by enum (maybe add expired state)
   SUCCESS = 'success'.freeze
 
-  # TODO: check if we can use Group::Archive::Path instead
-
-  def self.archive_dir
-    File.join(ASSET_PRIVATE_STORAGE, 'archives')
-  end
-
+  # TODO: rename the following two methods.
+  # they belong to the archive and not to path.
   def group_archive_dir
-    File.join(ASSET_PRIVATE_STORAGE, 'archives', group.id.to_s)
+    File.join(ARCHIVE_STORAGE, group.id.to_s)
   end
 
   def zipname_suffix
     "#{group.name}.zip"
   end
-
-  def zipname(type)
-    if type == 'singlepage'
-      'singlepage_' + zipname_suffix
-    else
-      'pages_' + zipname_suffix
-    end
-  end
-
-  def stored_zip_file(type)
-    File.join(group_archive_dir, zipname(type))
-  end
-
-  # end paths
 
   def pending?
     self.state == PENDING

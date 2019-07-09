@@ -4,7 +4,6 @@ class Group::Archive::SinglepageGenerator
   def initialize(opts = {})
     @user = opts[:user]
     @group = opts[:group]
-    @pages = opts[:pages]
     @types = opts[:types]
   end
 

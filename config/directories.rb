@@ -43,12 +43,14 @@ if Rails.env == 'test'
   dirs << PICTURE_PRIVATE_STORAGE = APP_ROOT + 'tmp/private_pictures'
   dirs << PICTURE_PUBLIC_STORAGE  = APP_ROOT + 'tmp/public_pictures'
   dirs << KEYRING_STORAGE         = APP_ROOT + 'tmp/private_assets/keyrings'
+  dirs << ARCHIVE_STORAGE         = APP_ROOT + 'tmp/private_assets/archives'
 else
   dirs << ASSET_PRIVATE_STORAGE   = APP_ROOT + 'assets'
   dirs << ASSET_PUBLIC_STORAGE    = APP_ROOT + 'public/assets'
   dirs << PICTURE_PRIVATE_STORAGE = APP_ROOT + 'assets/pictures'
   dirs << PICTURE_PUBLIC_STORAGE  = APP_ROOT + 'public/pictures'
   dirs << KEYRING_STORAGE         = APP_ROOT + 'assets/keyrings'
+  dirs << ARCHIVE_STORAGE         = APP_ROOT + 'assets/archives'
 end
 
 #

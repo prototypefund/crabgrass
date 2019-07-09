@@ -5,7 +5,7 @@ class Group::Archive::PagesGenerator
 
   def initialize(opts = {})
     @group = opts[:group]
-    @pages = opts[:pages]
+    @user = opts[:user]
     @types = opts[:types]
   end
 
@@ -64,7 +64,7 @@ class Group::Archive::PagesGenerator
     return if pages.empty?
     content = ''
     pages.each do |page|
-      add_page(page, group)
+      add_page(page, group) if @user.may?(:admin, page)
     end
     File.open(index_path(group), 'w') { |file| file.write(table_of_content(group, pages)) }
   end
