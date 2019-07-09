@@ -1,10 +1,10 @@
 class Group::Archive::SinglepageGenerator
   include Group::Archive::Path
 
-  def initialize(opts = {})
-    @user = opts[:user]
-    @group = opts[:group]
-    @types = opts[:types]
+  def initialize(user: nil, group: nil, types: nil)
+    self.user = user
+    self.group = group
+    self.types = types
   end
 
   def generate
@@ -40,15 +40,13 @@ class Group::Archive::SinglepageGenerator
     @group.group_names
   end
 
-  # singlepage specific stuff ?
+  # singlepage specific stuff
 
   def create_dirs
     FileUtils.rm_f(tmp_dir)
     FileUtils.mkdir_p(tmp_dir)
     FileUtils.mkdir_p(singlepage_dir) unless File.exist?(singlepage_dir)
     FileUtils.mkdir_p(File.join(singlepage_dir, 'assets')) unless File.exist?(File.join(singlepage_dir, 'assets'))
-    # FileUtils.mkdir_p(pages_dir) unless File.exists?(pages_dir) # FIXME
-    # remove
   end
 
   def add_pages(group)
@@ -111,24 +109,26 @@ class Group::Archive::SinglepageGenerator
   end
 
   def fix_links(group_name, html)
-    group_names.each do |searched_name|
-      res = html.match(/href=\"((\/#{searched_name}\/)([^.\"]*))\"+/)
+    group_names.each do |name|
+      name = name.sub('+', '\\\+')
+      res = html.match(/href="(\/(#{name})\/([^.\"]*))"+/)
       next unless res
-      # FIXME: not sure if it works for committees (or if it works at
-      # all)
-      # href=\"/rainbow+the-warm-colors/warm-wiki-page\
-
       # <MatchData "href=\"/animals/wiki-page-with-comments\""
       # 1:"/animals/wiki-page-with-comments"
-      # 2:"/animals/"
+      # 2:"animals"
       # 3:"wiki-page-with-comments"
       full_match = Regexp.last_match(1)
       group_match = Regexp.last_match(2)
       page_match = Regexp.last_match(3)
-      if searched_name == group_name # link to same group
+      # TODO: fix links for id-links like
+      # Markup: [anchor text -> +1007]
+      # HTML: <a href="/rainbow/+1007">anchor text</a>
+      # Attention: group lookup is required because
+      # 'rainbow' might not be the parent and not the owner
+      if name == group_name
         html = html.gsub(full_match, page_anchor(page_match))
       else
-        fixed_link = searched_name + '.html' + page_anchor(page_match)
+        fixed_link = group_match + '.html' + page_anchor(page_match)
         html = html.gsub(full_match, fixed_link)
       end
     end
@@ -147,6 +147,8 @@ class Group::Archive::SinglepageGenerator
 
   private
 
-  attr_reader :types
+  attr_writer :user, :group
+  attr_accessor :types
+
   attr_writer :toc
 end

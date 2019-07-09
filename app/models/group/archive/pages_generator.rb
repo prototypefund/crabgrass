@@ -1,8 +1,6 @@
 class Group::Archive::PagesGenerator
   include Group::Archive::Path
 
-  # FIXME: move to superclass
-
   def initialize(opts = {})
     @group = opts[:group]
     @user = opts[:user]
@@ -15,6 +13,9 @@ class Group::Archive::PagesGenerator
   end
 
   protected
+
+  # TODO: move somewhere else
+  # same as in singlepage generator
 
   def prepare_files
     create_dirs
@@ -112,8 +113,9 @@ class Group::Archive::PagesGenerator
   end
 
   def fix_links(group_name, html)
-    group_names.each do |searched_name|
-      res = html.match(/href=\"((\/#{searched_name}\/)([^.\"]*))\"+/)
+    group_names.each do |name|
+      name = name.sub('+', '\\\+')
+      res = html.match(/href=\"((\/#{name}\/)([^.\"]*))\"+/)
       next unless res
       # <MatchData "href=\"/animals/wiki-page-with-comments\""
       # 1:"/animals/wiki-page-with-comments"
@@ -122,9 +124,9 @@ class Group::Archive::PagesGenerator
       full_match = Regexp.last_match(1)
       group_match = Regexp.last_match(2)
       page_match = Regexp.last_match(3)
-
+      # TODO: fix links for id-links like (see SinglepageGenerator)
       html = html.gsub(full_match, full_match + '.html')
-      html = if searched_name == group_name # link to same group
+      html = if name == group_name # link to same group
                html.gsub(group_match, '')
              else
                html.gsub(full_match, full_match[1..-1])

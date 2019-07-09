@@ -13,7 +13,7 @@ require 'zipfilegenerator'
 class Group::Archive < ActiveRecord::Base
   include Group::Archive::Path
   belongs_to :group
-  belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id' # not sure if we need this
+  belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id'
   validates_presence_of :group, :created_by_id
   before_destroy :delete_group_archive_dir
 
