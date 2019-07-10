@@ -19,8 +19,10 @@ class Group::Archive < ActiveRecord::Base
 
   ARCHIVED_TYPES = %w[WikiPage DiscussionPage AssetPage Gallery].freeze
 
-  PENDING = 'pending'.freeze # TODO: replace by enum (maybe add expired state)
-  SUCCESS = 'success'.freeze
+  # TODO: table creation for group_archives in one migration
+  # Changing the type of the state field does not work if archive
+  # records exist, because rows cannot be converted autmatically
+  enum state: { pending: 0, success: 1 }
 
   # TODO: rename the following two methods.
   # they belong to the archive and not to path.
@@ -32,10 +34,6 @@ class Group::Archive < ActiveRecord::Base
     "#{group.name}.zip"
   end
 
-  def pending?
-    self.state == PENDING
-  end
-
   def process
     # TODO: check if we can move this to the Job
     return false unless valid?
@@ -43,7 +41,7 @@ class Group::Archive < ActiveRecord::Base
     Group::Archive::SinglepageGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES).generate
     Group::Archive::PagesGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES).generate
     self.filename = zipname_suffix
-    self.state = SUCCESS
+    self.state = 'success'
     save!
   rescue Exception => exc
     Rails.logger.error 'Archive could not be created: ' + exc.message

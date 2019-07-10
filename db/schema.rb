@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_27_160218) do
+ActiveRecord::Schema.define(version: 2019_07_10_190538) do
+
+  create_table "archive_versions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.integer "archive_id"
+    t.integer "version"
+    t.string "filename"
+    t.string "state", limit: 10, default: "pending"
+    t.integer "created_by_id"
+    t.integer "updated_by_id"
+    t.integer "group_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["archive_id"], name: "index_archive_versions_on_archive_id"
+  end
 
   create_table "asset_versions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "asset_id"
@@ -149,7 +162,7 @@ ActiveRecord::Schema.define(version: 2019_05_27_160218) do
 
   create_table "group_archives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "filename"
-    t.string "state", limit: 10, default: "pending"
+    t.integer "state", default: 0
     t.integer "version", default: 0
     t.integer "created_by_id"
     t.integer "updated_by_id"
