@@ -18,6 +18,7 @@ class Group::Archive < ActiveRecord::Base
   before_destroy :delete_group_archive_dir
 
   ARCHIVED_TYPES = %w[WikiPage DiscussionPage AssetPage Gallery].freeze
+  EXPIRY_PERIOD = 1.month.freeze
 
   enum state: { pending: 0, success: 1 }
 
@@ -31,6 +32,14 @@ class Group::Archive < ActiveRecord::Base
     save!
   rescue Exception => exc
     Rails.logger.error 'Archive could not be created: ' + exc.message
+  end
+
+  def expires_at
+    self.created_at + EXPIRY_PERIOD
+  end
+
+  def expired?
+    Time.zone.now > expires_at
   end
 
   def archived_by

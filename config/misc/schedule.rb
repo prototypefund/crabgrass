@@ -36,3 +36,7 @@ every 1.day, :at => '0:20 am' do
   curl 'deliver_digests'
 end
 
+every 1.day, at: '2:30' do
+  rake 'ecology:remove_expired_archives'
+end
+
