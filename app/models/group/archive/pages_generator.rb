@@ -1,6 +1,8 @@
 class Group::Archive::PagesGenerator
   include Group::Archive::Path
 
+  attr_reader :tmp_dir
+
   def initialize(opts = {})
     @group = opts[:group]
     @user = opts[:user]
@@ -8,17 +10,17 @@ class Group::Archive::PagesGenerator
   end
 
   def generate
-    prepare_files
-    create_zip_file
+    Dir.mktmpdir do |dir|
+      @tmp_dir = dir
+      prepare_files
+      create_zip_file
+    end
   end
 
   protected
 
-  # TODO: move somewhere else
-  # same as in singlepage generator
-
   def prepare_files
-    create_dirs
+    create_group_dirs
     add_group_content
     @group.committees.each do |committee|
       add_group_content(committee)
@@ -31,7 +33,7 @@ class Group::Archive::PagesGenerator
   end
 
   def create_zip_file
-    zf = ::ZipFileGenerator.new(pages_dir, stored_zip_file('pages'))
+    zf = ::ZipFileGenerator.new(tmp_dir, stored_zip_file('pages'))
     zf.write
   end
 
@@ -44,12 +46,6 @@ class Group::Archive::PagesGenerator
   end
 
   # page zip specific stuff
-
-  def create_dirs
-    FileUtils.rm_f(tmp_dir)
-    FileUtils.mkdir_p(pages_dir) unless File.exist?(pages_dir)
-    create_group_dirs
-  end
 
   # tree structure with group directory at the top
   def create_group_dirs
@@ -84,8 +80,6 @@ class Group::Archive::PagesGenerator
     haml_engine = Haml::Engine.new(template)
     if page.type == 'WikiPage'
       wiki_html = nil || page.wiki.body_html.gsub('/asset', 'asset')
-      # FIXME: not sure if page.owner is the right choice here - it was
-      # @group before which seemed wrong.
       haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page
     else
       haml_engine.to_html Object.new, group: page.owner, page: page, wiki_html: nil
@@ -102,10 +96,10 @@ class Group::Archive::PagesGenerator
     return unless asset.is_a? Asset
     begin
       asset_id = asset.id.to_s
-      FileUtils.mkdir(asset_path(asset_id, group)) unless File.exist?(asset_path(asset_id, group))
-      FileUtils.cp asset.private_filename, File.join(asset_path(asset_id, group), asset.filename.tr(' ', '+'))
+      FileUtils.mkdir(asset_group_path(asset_id, group)) unless File.exist?(asset_group_path(asset_id, group))
+      FileUtils.cp asset.private_filename, File.join(asset_group_path(asset_id, group), asset.filename.tr(' ', '+'))
       asset.thumbnails.each do |thumbnail|
-        FileUtils.cp thumbnail.private_filename, File.join(asset_path(asset_id, group), thumbnail.filename.tr(' ', '+'))
+        FileUtils.cp thumbnail.private_filename, File.join(asset_group_path(asset_id, group), thumbnail.filename.tr(' ', '+'))
       end
     rescue Errno::ENOENT => error
       Rails.logger.error 'Asset file missing: ' + error.message

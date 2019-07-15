@@ -1,6 +1,8 @@
 class Group::Archive::SinglepageGenerator
   include Group::Archive::Path
 
+  attr_reader :tmp_dir
+
   def initialize(user: nil, group: nil, types: nil)
     self.user = user
     self.group = group
@@ -8,14 +10,17 @@ class Group::Archive::SinglepageGenerator
   end
 
   def generate
-    prepare_files
-    create_zip_file
+    Dir.mktmpdir do |dir|
+      @tmp_dir = dir
+      prepare_files
+      create_zip_file
+    end
   end
 
   protected
 
   def prepare_files
-    create_dirs
+    create_asset_dir
     add_group_content
     @group.committees.each do |committee|
       add_group_content(committee)
@@ -28,7 +33,7 @@ class Group::Archive::SinglepageGenerator
   end
 
   def create_zip_file
-    zf = ::ZipFileGenerator.new(singlepage_dir, stored_zip_file('singlepage'))
+    zf = ::ZipFileGenerator.new(tmp_dir, stored_zip_file('singlepage'))
     zf.write
   end
 
@@ -42,11 +47,8 @@ class Group::Archive::SinglepageGenerator
 
   # singlepage specific stuff
 
-  def create_dirs
-    FileUtils.rm_f(tmp_dir)
-    FileUtils.mkdir_p(tmp_dir)
-    FileUtils.mkdir_p(singlepage_dir) unless File.exist?(singlepage_dir)
-    FileUtils.mkdir_p(File.join(singlepage_dir, 'assets')) unless File.exist?(File.join(singlepage_dir, 'assets'))
+  def create_asset_dir
+    FileUtils.mkdir_p(File.join(tmp_dir, 'assets'))
   end
 
   def add_pages(group)
@@ -59,7 +61,7 @@ class Group::Archive::SinglepageGenerator
     end
     return unless content
     content = toc_html(group) + content
-    File.open(File.join(singlepage_dir, "#{group.name}.html"), 'w') { |file| file.write(content) }
+    File.open(File.join(tmp_dir, "#{group.name}.html"), 'w') { |file| file.write(content) }
   end
 
   def append_to_singlepage(page, content)
@@ -85,19 +87,19 @@ class Group::Archive::SinglepageGenerator
   end
 
   def add_avatar(group)
-    FileUtils.cp avatar_url_for(group), File.join(singlepage_dir, 'assets', "#{group.name}.jpg")
+    FileUtils.cp avatar_url_for(group), File.join(tmp_dir, 'assets', "#{group.name}.jpg")
   rescue Errno::ENOENT => error
     Rails.logger.error 'Avatar file missing: ' + error.message
   end
 
-  def add_asset(asset, _group = @group)
+  def add_asset(asset)
     return unless asset.is_a? Asset # page.assets also contains wikis!
     begin
       asset_id = asset.id.to_s
-      FileUtils.mkdir(asset_path_singlepage(asset_id)) unless File.exist?(asset_path_singlepage(asset_id))
-      FileUtils.cp asset.private_filename, File.join(asset_path_singlepage(asset_id), asset.filename.tr(' ', '+'))
+      FileUtils.mkdir(asset_path(asset_id)) unless File.exist?(asset_path(asset_id))
+      FileUtils.cp asset.private_filename, File.join(asset_path(asset_id), asset.filename.tr(' ', '+'))
       asset.thumbnails.each do |thumbnail|
-        FileUtils.cp thumbnail.private_filename, File.join(asset_path_singlepage(asset_id), thumbnail.filename.tr(' ', '+'))
+        FileUtils.cp thumbnail.private_filename, File.join(asset_path(asset_id), thumbnail.filename.tr(' ', '+'))
       end
     rescue Errno::ENOENT => error
       Rails.logger.error 'Asset file missing: ' + error.message

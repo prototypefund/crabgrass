@@ -33,6 +33,7 @@ class Group::ArchiveControllerTest < ActionController::TestCase
     assert_not_found
   end
 
+  # TODO: test successful creation
   def test_create_archive
     login_as @user
     assert_not @group_archive
