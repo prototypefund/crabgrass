@@ -1,7 +1,8 @@
-GroupArchiveJob = Struct.new(:group, :user) do
+GroupArchiveJob = Struct.new(:group, :user, :language) do
 
   def enqueue(job)
     Group::Archive.create!(group: group, created_by_id: user.id)
+    I18n.locale = language
   end
 
   def perform()

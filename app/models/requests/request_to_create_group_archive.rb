@@ -36,7 +36,7 @@ class RequestToCreateGroupArchive < Request
   alias may_destroy? may_create?
 
   def after_approval
-    Delayed::Job.enqueue GroupArchiveJob.new(group, created_by)
+    Delayed::Job.enqueue GroupArchiveJob.new(group, created_by, I18n.locale)
   end
 
   def event

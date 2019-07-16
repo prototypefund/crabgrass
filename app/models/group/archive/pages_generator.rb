@@ -3,10 +3,10 @@ class Group::Archive::PagesGenerator
 
   attr_reader :tmp_dir
 
-  def initialize(opts = {})
-    @group = opts[:group]
-    @user = opts[:user]
-    @types = opts[:types]
+  def initialize(user:, group:, types:)
+    self.user = user
+    self.group = group
+    self.types = types
   end
 
   def generate
@@ -162,6 +162,6 @@ class Group::Archive::PagesGenerator
 
   private
 
-  attr_reader :types
-  attr_writer :toc
+  attr_writer :user, :group, :toc
+  attr_accessor :types
 end

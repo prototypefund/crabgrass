@@ -3,7 +3,7 @@ class Group::Archive::SinglepageGenerator
 
   attr_reader :tmp_dir
 
-  def initialize(user: nil, group: nil, types: nil)
+  def initialize(user:, group:, types:)
     self.user = user
     self.group = group
     self.types = types
@@ -151,6 +151,4 @@ class Group::Archive::SinglepageGenerator
 
   attr_writer :user, :group
   attr_accessor :types
-
-  attr_writer :toc
 end
