@@ -152,6 +152,7 @@ ActiveRecord::Schema.define(version: 201907147160218) do
     t.integer "state", default: 0
     t.integer "created_by_id"
     t.integer "group_id"
+    t.string "excluded_asset_ids"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_group_archives_on_group_id"

@@ -1,7 +1,8 @@
 class Group::Archive::SinglepageGenerator
   include Group::Archive::Path
 
-  attr_reader :tmp_dir
+  attr_reader :tmp_dir, :excluded_assets
+  MAX_ASSET_SIZE = 100.megabytes
 
   def initialize(user:, group:, types:)
     self.user = user
@@ -10,6 +11,7 @@ class Group::Archive::SinglepageGenerator
   end
 
   def generate
+    @excluded_assets = []
     Dir.mktmpdir do |dir|
       @tmp_dir = dir
       prepare_files
@@ -20,7 +22,7 @@ class Group::Archive::SinglepageGenerator
   protected
 
   def prepare_files
-    create_asset_dir
+    create_asset_dir # differs from pages_generator
     add_group_content
     @group.committees.each do |committee|
       add_group_content(committee)
@@ -77,7 +79,6 @@ class Group::Archive::SinglepageGenerator
     @toc << "<p><a href=\##{page.id}>#{page.title}</a></p>"
     template = File.read('app/views/group/archives/page.html.haml')
     haml_engine = Haml::Engine.new(template)
-    # FIXME: link stuff not working yet.
     if page.type == 'WikiPage'
       wiki_html = nil || page.wiki.body_html.gsub('/asset', 'asset')
       haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page
@@ -92,8 +93,26 @@ class Group::Archive::SinglepageGenerator
     Rails.logger.error 'Avatar file missing: ' + error.message
   end
 
+  def add_to_excluded_assets(asset)
+    @excluded_assets << asset.id
+  end
+
+  # TODO: add to asset class
+  def big_asset?(asset)
+    asset.size > MAX_ASSET_SIZE
+  end
+
+
   def add_asset(asset)
-    return unless asset.is_a? Asset # page.assets also contains wikis!
+    return unless asset.is_a? Asset # better check page type before?
+    if big_asset?(asset)
+      add_to_excluded_assets(asset)
+    else
+      copy_asset_files(asset)
+    end
+  end
+
+  def copy_asset_files(asset)
     begin
       asset_id = asset.id.to_s
       FileUtils.mkdir(asset_path(asset_id)) unless File.exist?(asset_path(asset_id))

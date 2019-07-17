@@ -9,6 +9,13 @@ require 'zipfilegenerator'
 # - singlepage: one HTML file per group or committee
 # - pages: one HTML file per page
 #
+# Big files are not archived. For those files we show
+# download links.
+#
+# TODO: currently we store the ids of the big files during
+# archive generation and show links to the files which are
+# still available. New big files will not be displayed.
+#
 
 class Group::Archive < ActiveRecord::Base
   include Group::Archive::Path
@@ -16,6 +23,7 @@ class Group::Archive < ActiveRecord::Base
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id'
   validates_presence_of :group, :created_by_id
   before_destroy :delete_group_archive_dir
+  attr_reader :excluded_assets
 
   ARCHIVED_TYPES = %w[WikiPage DiscussionPage AssetPage Gallery].freeze
   EXPIRY_PERIOD = 1.month.freeze
@@ -25,8 +33,11 @@ class Group::Archive < ActiveRecord::Base
   def process
     return false unless valid?
     remove_old_archive
-    Group::Archive::SinglepageGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES).generate
-    Group::Archive::PagesGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES).generate
+    gen_single = Group::Archive::SinglepageGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES)
+    gen_pages = Group::Archive::PagesGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES)
+    gen_single.generate
+    gen_pages.generate
+    self.excluded_asset_ids = gen_single.excluded_assets.join(',')
     self.filename = zipname_suffix
     self.state = 'success'
     save!
@@ -34,6 +45,16 @@ class Group::Archive < ActiveRecord::Base
     Rails.logger.error 'Archive could not be created: ' + exc.message
   end
 
+  def excluded_assets
+    unless excluded_asset_ids.empty?
+      ids = excluded_asset_ids.split(',')
+      assets = Asset.where(id: ids)
+    else
+      []
+    end
+  end
+
+# remove self where it is not needed!
   def expires_at
     self.created_at + EXPIRY_PERIOD
   end

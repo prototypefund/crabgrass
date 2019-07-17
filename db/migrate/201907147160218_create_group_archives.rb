@@ -5,6 +5,7 @@ class CreateGroupArchives < ActiveRecord::Migration[4.2]
       t.integer :state, default: 0
       t.integer :created_by_id
       t.belongs_to :group, index: true
+      t.string :excluded_asset_ids
       t.timestamps null: false
     end
   end
