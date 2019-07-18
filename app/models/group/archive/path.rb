@@ -28,6 +28,14 @@ module Group::Archive::Path
     "#{@group.name}.zip"
   end
 
+  def css_file(group)
+    if group.committee? # FIXME: will not work for councils (if exported as children)
+      '../archive.css'
+    else
+      'archive.css'
+    end
+  end
+
   def avatar_url_for(group)
     format("#{APP_ROOT}/public/avatars/%s/large.jpg", group.avatar_id || 0)
   end

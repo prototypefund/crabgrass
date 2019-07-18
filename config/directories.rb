@@ -34,6 +34,7 @@ dirs << STATIC_JS_SRC_DIR        = APP_ROOT + 'app/assets/javascripts'
 dirs << AS_NEEDED_JS_SRC_DIR     = APP_ROOT + 'app/assets/javascripts/as_needed'
 dirs << STATIC_JS_DEST_DIR       = APP_ROOT + 'public/static'
 dirs << AS_NEEDED_JS_DEST_DIR    = APP_ROOT + 'public/static/as_needed'
+dirs << STYLES_DIR               = APP_ROOT + 'app/assets/stylesheets' # TODO: check if there is a Rails constant for this.
 
 # assets
 

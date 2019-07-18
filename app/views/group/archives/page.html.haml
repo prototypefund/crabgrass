@@ -1,26 +1,33 @@
-%meta(charset="UTF-8")
-%h1{ id: page.id }#{page.title}
-%small.summary=h page.summary
-- if wiki_html.present?
-  = wiki_html
-- if page.posts.present?
-  %div.comments
-  %h2=h(:comments.t)
-  - page.posts.each do |post|
-    %h4
-      = "#{post.user.login} on #{post.updated_at}"
-    .negativespace
-      = post.body_html
-- if page.assets.present?
-  %div.attachments
-  %h2=h(:attachments.t)
-  - page.assets.each do |asset|
-    - image_url = File.join('assets', asset.id.to_s, asset.filename.gsub(' ', '+'))
-    %li
-      %a{ :href => image_url, :title => asset.filename } #{asset.filename}
-- if page.data.is_a? Asset
-  %div.attachments
-  %h2=h(:file.t)
-  - image_url = File.join('assets', page.data.id.to_s, page.data.filename.gsub(' ', '+'))
-  %li
-    %a{ :href => image_url, :title => page.data.filename } #{page.data.filename}
+%html
+  %head
+    %meta{ charset: 'utf8' }
+    %title=page.title
+    %link{:rel => :stylesheet, :type => :"text/css", :href => css_file}
+  %body
+    =# link_to 'index.html', :back.t, class: 'backlink'
+    %div.title_box
+      %h1{ id: page.id }#{page.title}
+      %small.summary=h page.summary
+    - if wiki_html.present?
+      = wiki_html
+    - if page.posts.present?
+      %div.comments
+      %h2=h(:comments.t)
+      - page.posts.each do |post|
+        %h4
+          = "#{post.user.login} on #{post.updated_at}"
+        .negativespace
+          = post.body_html
+    - if page.assets.present?
+      %div.attachments
+      %h2=h(:attachments.t)
+      - page.assets.each do |asset|
+        - image_url = File.join('assets', asset.id.to_s, asset.filename.gsub(' ', '+'))
+        %li
+          %a{ :href => image_url, :title => asset.filename } #{asset.filename}
+    - if page.data.is_a? Asset
+      %div.attachments
+      %h2=h(:file.t)
+      - image_url = File.join('assets', page.data.id.to_s, page.data.filename.gsub(' ', '+'))
+      %li
+        %a{ :href => image_url, :title => page.data.filename } #{page.data.filename}

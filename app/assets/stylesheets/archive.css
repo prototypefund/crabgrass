@@ -1,0 +1,60 @@
+body {
+  font-family: Verdana, "Liberation Sans", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.428571429;
+  color: #000;
+  max-width: 1200px;
+  padding-right: 40px;
+  padding-left: 40px;
+}
+
+h1 {
+  font-size: 30px;
+  color: #666666;
+  border-bottom: 2px dotted #999999;
+  margin: 0.67em 0;
+}
+
+h2 {
+  font-size: 18px;
+  border-bottom: 1px dashed #cccccc;
+  margin: 0.83em 0;
+}
+
+a {
+  color: #2a5183;
+  text-decoration: none;
+}
+
+a.anchor, a.shy {display:none;}
+
+a:hover {
+  color: #172d49;
+  text-decoration: underline;
+}
+
+ul, ol {
+  padding-left: 2.5em;
+  margin-left: 0.5em;
+  margin-top: 0;
+  margin-bottom: 9px;
+}
+
+code {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  display: block;
+  border: solid 1px #ffe8a9;
+  background-color: #fff6dd;
+}
+
+.title_box {
+  margin-bottom: 15px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.backlink {
+  margin-right: 10px;
+  float: 'right';
+}

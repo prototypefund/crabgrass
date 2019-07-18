@@ -23,6 +23,7 @@ class Group::Archive::SinglepageGenerator
 
   def prepare_files
     create_asset_dir # differs from pages_generator
+    add_css_file
     add_group_content
     @group.committees.each do |committee|
       add_group_content(committee)
@@ -81,10 +82,14 @@ class Group::Archive::SinglepageGenerator
     haml_engine = Haml::Engine.new(template)
     if page.type == 'WikiPage'
       wiki_html = nil || page.wiki.body_html.gsub('/asset', 'asset')
-      haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page
+      haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page, css_file: css_file(page.owner)
     else
-      haml_engine.to_html Object.new, group: page.owner, page: page, wiki_html: nil
+      haml_engine.to_html Object.new, group: page.owner, page: page, wiki_html: nil, css_file: css_file(page.owner)
     end
+  end
+
+  def add_css_file
+    FileUtils.cp File.join(STYLES_DIR, 'archive.css'), tmp_dir
   end
 
   def add_avatar(group)

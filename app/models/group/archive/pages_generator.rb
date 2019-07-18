@@ -21,6 +21,7 @@ class Group::Archive::PagesGenerator
 
   def prepare_files
     create_group_dirs
+    add_css_file
     add_group_content
     @group.committees.each do |committee|
       add_group_content(committee)
@@ -80,10 +81,14 @@ class Group::Archive::PagesGenerator
     haml_engine = Haml::Engine.new(template)
     if page.type == 'WikiPage'
       wiki_html = nil || page.wiki.body_html.gsub('/asset', 'asset')
-      haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page
+      haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page, css_file: css_file(page.owner)
     else
-      haml_engine.to_html Object.new, group: page.owner, page: page, wiki_html: nil
+      haml_engine.to_html Object.new, group: page.owner, page: page, wiki_html: nil, css_file: css_file(page.owner)
     end
+  end
+
+  def add_css_file
+    FileUtils.cp File.join(STYLES_DIR, 'archive.css'), File.join(tmp_dir, @group.name)
   end
 
   def add_avatar(group)
@@ -133,31 +138,33 @@ class Group::Archive::PagesGenerator
   def table_of_content(group, pages)
     public_wiki = group.public_wiki
     private_wiki = group.private_wiki
-    html = "<html><head></head><meta charset='UTF-8'><body><table>"
-    html << "<img src='assets/#{group.name}.jpg')} alt='avatar' height='64' width='64'>"
+    html = "<html><head><meta charset='UTF-8'>"
+    html << "<link href=#{css_file(group)} rel='stylesheet' type='text/css'></head>"
+    html << "<body><img src='assets/#{group.name}.jpg') alt='avatar' height='64' width='64'>"
     html << "<h1>Archive of #{group.display_name}</h1>"
     html << "<p>Created on #{Time.now.getutc}</p>"
     html << "<h3>#{:private_wiki.t}</h3>#{private_wiki.body_html}" if private_wiki&.has_content?
     html << "<h3>#{:public_wiki.t}</h3>#{public_wiki.body_html}" if public_wiki&.has_content?
+    html << "<table>"
     pages.each do |page|
       html << "<tr><td><a href=./#{page.name_url}.html>#{page.title}</a></td><td>#{:updated_by.t} #{page.updated_by.display_name}</td><td>#{page.updated_at}</td></tr>"
     end
     html << '</table>'
     if group.council
-      html << "<h3>#{:council.t}</h3>"
+      html << "<h2>#{:council.t}</h2>"
       unless group_pages(group.council).empty?
         html << "<p><a href=./#{group.council.name}/index.html>#{group.council.display_name}</a></p>"
       end
     end
     if group.real_committees.any?
-      html << "<h3>#{:committees.t}</h3>"
+      html << "<h2>#{:committees.t}</h2>"
       group.children.each do |committee|
         unless group_pages(committee).empty?
           html << "<p><a href=./#{committee.name}/index.html>#{committee.display_name}</a></p>"
         end
       end
     end
-    html << '</html>'
+    html << '</body></html>'
   end
 
   private
