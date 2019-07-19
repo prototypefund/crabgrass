@@ -79,13 +79,8 @@ class Group::Archive::SinglepageGenerator
   def page_content(page)
     @toc << "<p><a href=\##{page.id}>#{page.title}</a></p>"
     template = File.read('app/views/group/archives/page.html.haml')
-    haml_engine = Haml::Engine.new(template)
-    if page.type == 'WikiPage'
-      wiki_html = nil || page.wiki.body_html.gsub('/asset', 'asset')
-      haml_engine.to_html Object.new, wiki_html: fix_links(page.owner.name, wiki_html), group: page.owner, page: page, css_file: css_file(page.owner)
-    else
-      haml_engine.to_html Object.new, group: page.owner, page: page, wiki_html: nil, css_file: css_file(page.owner)
-    end
+    engine = Haml::Engine.new(template)
+    engine.render Object.new, wiki_html: fixed_html(page), group: page.owner, page: page, css_file: css_file(page.owner)
   end
 
   def add_css_file
@@ -134,7 +129,9 @@ class Group::Archive::SinglepageGenerator
     '#' + Page.find_by(name: name).try.id.to_s
   end
 
-  def fix_links(group_name, html)
+  def fixed_html(page)
+    return nil unless page.type == 'WikiPage'
+    html = page.wiki.body_html.gsub('/asset', 'asset')
     group_names.each do |name|
       name = name.sub('+', '\\\+')
       res = html.match(/href="(\/(#{name})\/([^.\"]*))"+/)
@@ -151,7 +148,7 @@ class Group::Archive::SinglepageGenerator
       # HTML: <a href="/rainbow/+1007">anchor text</a>
       # Attention: group lookup is required because
       # 'rainbow' might not be the parent and not the owner
-      if name == group_name
+      if name == page.owner.name
         html = html.gsub(full_match, page_anchor(page_match))
       else
         fixed_link = group_match + '.html' + page_anchor(page_match)

@@ -33,6 +33,11 @@ a:hover {
   text-decoration: underline;
 }
 
+a.back {
+  float: right;
+  margin-right: 10px;
+}
+
 ul, ol {
   padding-left: 2.5em;
   margin-left: 0.5em;
@@ -49,6 +54,7 @@ code {
 
 .title_box {
   margin-bottom: 15px;
+  margin-top: 25px;
   background-color: #eee;
   border: 1px solid #ddd;
   border-radius: 4px;

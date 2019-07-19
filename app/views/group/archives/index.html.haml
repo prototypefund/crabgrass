@@ -2,34 +2,33 @@
   - if @archive
     - if @archive.pending?
       - f.row do |r|
-        - r.label "#{:download.t} #{:archive.t}"
+        - r.label :download.t
         - r.info :group_archive_pending.t
         - r.input reload_archive_page_link
     - else
       - f.row do |r|
-        - r.label "#{:download.t} #{:archive.t}"
+        - r.label :download.t
         - r.input link_line(download_group_archive_link(type: 'singlepage'), :single_page_archive.t)
         - r.input link_line(download_group_archive_link(type: 'pages'), :one_file_per_page_archive.t)
         - r.info "Archived by #{@archive.archived_by} on #{friendly_date(@archive.updated_at)}"
-        -# TODO: move to partial and include paging - should we rather display links to the pages?
-        - if @archive.excluded_assets.any?
-          - f.row do |r|
-            - r.label "Download Big Files"
-            - r.info "The follwing files are not part of the archive. You can download them here if you like"
-            - @archive.excluded_assets.each do |asset|
-              - r.input link_to_asset asset, :small, crop: '64x64'
-              -# r.input link_to h(truncate(asset.basename, length: 20)), asset.url
+      - if @archive.excluded_assets.any?
         - f.row do |r|
-          - r.label "#{:delete.t} #{:archive.t}"
-          - r.input destroy_group_archive_link
+          - r.label "Download Big Files"
+          - r.info "The follwing files are not part of the archive. You can download them here if you like"
+          - @archive.excluded_assets.each do |asset|
+            - r.input link_to_asset asset, :small, crop: '64x64'
+            -# r.input link_to h(truncate(asset.basename, length: 20)), asset.url
+      - f.row do |r|
+        - r.label :delete.t
+        - r.input destroy_group_archive_link
   - else
     - if @request
       - f.row do |r|
-        - r.label "#{:create.t} #{:archive.t}"
+        - r.label :create.t
         - r.input link_to(:request_pending.t(request: :request_to_create_group_archive.t.capitalize), group_request_path(@group, @request))
         - r.info I18n.t(:archive_info, group_type: t(@group.group_type.downcase))
     - elsif create_group_archive_link.present?
       - f.row do |r|
-        - r.label "#{:create.t} #{:archive.t}"
+        - r.label :create.t
         - r.input create_group_archive_link
         - r.info I18n.t(:archive_info, group_type: t(@group.group_type.downcase))

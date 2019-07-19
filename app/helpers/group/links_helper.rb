@@ -154,8 +154,11 @@ module Group::LinksHelper
 
   def destroy_group_archive_link
     if logged_in? && policy(@group).update?
-      button_to :delete.t, group_archive_path(@group), method: :delete, class: 'btn btn-danger'
-   end
+      button_to :destroy_thing.t(thing: :archive.t),
+                group_archive_path(@group),
+                method: :delete,
+                class: 'btn btn-danger'
+    end
   end
 
   def download_group_archive_link(params)

@@ -60,8 +60,8 @@ class GroupArchiveTest < JavascriptIntegrationTest
     click_on 'OK'
     click_on 'Archives'
     sleep 2
-    click_on 'Delete'
-    assert_no_content 'Delete'
+    click_on 'Destroy'
+    assert_no_content 'Destroy'
   end
 
   def test_re_create_archive
@@ -74,8 +74,8 @@ class GroupArchiveTest < JavascriptIntegrationTest
     click_on 'OK'
     click_on 'Archives'
     sleep 2
-    click_on 'Delete'
-    assert_no_content 'Delete'
+    click_on 'Destroy'
+    assert_no_content 'Destroy'
     click_on 'Create a new Archive'
     click_on 'OK'
     sleep 2
