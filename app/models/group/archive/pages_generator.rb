@@ -77,9 +77,11 @@ class Group::Archive::PagesGenerator
 
   def page_content(page)
     @toc << "<p><a href=\##{page.id}>#{page.title}</a></p>"
-    template = File.read('app/views/group/archives/page.html.haml')
-    haml_engine = Haml::Engine.new(template)
-    haml_engine.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page, css_file: css_file(page.owner)
+    layout = Haml::Engine.new(File.read('app/views/group/archives/layout.html.haml'))
+    layout.render Object.new, title: page.title, css_file: css_file(page.owner) do
+      body = Haml::Engine.new(File.read('app/views/group/archives/page.html.haml'))
+      body.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page
+    end
   end
 
   def indexpage_content(group, pages)

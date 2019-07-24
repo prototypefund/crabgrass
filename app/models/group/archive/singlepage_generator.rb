@@ -54,33 +54,38 @@ class Group::Archive::SinglepageGenerator
     FileUtils.mkdir_p(File.join(tmp_dir, 'assets'))
   end
 
+
   def add_pages(group)
     @toc = []
     pages = group_pages(group)
     return if pages.empty?
     content = ''
     pages.each do |page|
-      content = append_to_singlepage(page, content) if @user.may?(:admin, page)
+      add_assets(page)
     end
+    content = singlepage_content(group)
     return unless content
-    content = toc_html(group) + content
     File.open(File.join(tmp_dir, "#{group.name}.html"), 'w') { |file| file.write(content) }
   end
 
-  def append_to_singlepage(page, content)
-    content += page_content(page)
+  def singlepage_content(group)
+    layout = Haml::Engine.new(File.read('app/views/group/archives/layout.html.haml'))
+    layout.render Object.new, title: group.name, css_file: css_file(group) do
+      body_html = ''
+      group.pages.each do |page|
+        @toc << "<p><a href=\##{page.id}>#{page.title}</a></p>"
+        body = Haml::Engine.new(File.read('app/views/group/archives/page.html.haml'))
+        body_html += body.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page
+      end
+      toc_html(group) + body_html
+    end
+  end
+
+  def add_assets(page)
     page.assets.each do |attachment|
       add_asset(attachment)
     end
     add_asset(page.data)
-    content
-  end
-
-  def page_content(page)
-    @toc << "<p><a href=\##{page.id}>#{page.title}</a></p>"
-    template = File.read('app/views/group/archives/page.html.haml')
-    engine = Haml::Engine.new(template)
-    engine.render Object.new, wiki_html: fixed_html(page), group: page.owner, page: page, css_file: css_file(page.owner)
   end
 
   def add_css_file
