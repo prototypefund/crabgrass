@@ -1,5 +1,8 @@
 %div.title_box
-  %a{ href: 'index.html', title: :back.t, class: 'back'} #{:back.t}
+  - if type == :singlepage
+    %a{ href: '#toc', title: :back.t, class: 'back'} #{:back.t}
+  - else
+    %a{ href: 'index.html', title: :back.t, class: 'back'} #{:back.t}
   %h1{ id: page.id }#{page.title}
   %small.summary=h page.summary
 - if wiki_html.present?
@@ -23,5 +26,6 @@
   %div.attachments
     %h2=h(:file.t)
     - image_url = File.join('assets', page.data.id.to_s, page.data.filename.gsub(' ', '+'))
-    %li
-      %a{ href: image_url, title: page.data.filename } #{page.data.filename}
+    %ul
+      %li
+        %a{ href: image_url, title: page.data.filename } #{page.data.filename}

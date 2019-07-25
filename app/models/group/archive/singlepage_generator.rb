@@ -56,12 +56,11 @@ class Group::Archive::SinglepageGenerator
 
 
   def add_pages(group)
-    @toc = []
     pages = group_pages(group)
     return if pages.empty?
     content = ''
     pages.each do |page|
-      add_assets(page)
+      add_assets(page) if @user.may?(:admin, page)
     end
     content = singlepage_content(group)
     return unless content
@@ -69,15 +68,16 @@ class Group::Archive::SinglepageGenerator
   end
 
   def singlepage_content(group)
-    layout = Haml::Engine.new(File.read('app/views/group/archives/layout.html.haml'))
-    layout.render Object.new, title: group.name, css_file: css_file(group) do
+    layout = Haml::Engine.new(File.read('app/views/group/archives/layout_singlepage.html.haml'))
+    layout.render Object.new, group: group, pages: group.pages do
       body_html = ''
       group.pages.each do |page|
-        @toc << "<p><a href=\##{page.id}>#{page.title}</a></p>"
-        body = Haml::Engine.new(File.read('app/views/group/archives/page.html.haml'))
-        body_html += body.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page
+        if @user.may?(:admin, page)
+          body = Haml::Engine.new(File.read('app/views/group/archives/page.html.haml'))
+          body_html += body.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page, type: :singlepage
+        end
       end
-      toc_html(group) + body_html
+      body_html
     end
   end
 
@@ -161,16 +161,6 @@ class Group::Archive::SinglepageGenerator
       end
     end
     html
-  end
-
-  def toc_html(group)
-    toc_html = "<img src='assets/#{group.name}.jpg' alt='avatar' height='64' width='64'>"
-    toc_html << "<h1>Archive of #{group.name}</h1>"
-    toc_html << "<p>Created on #{Time.now.getutc}</p>"
-    @toc.each do |entry|
-      toc_html << entry
-    end
-    toc_html
   end
 
   private

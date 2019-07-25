@@ -57,7 +57,6 @@ class Group::Archive::PagesGenerator
   end
 
   def add_pages(group)
-    @toc = []
     pages = group_pages(group)
     return if pages.empty?
     content = ''
@@ -76,11 +75,10 @@ class Group::Archive::PagesGenerator
   end
 
   def page_content(page)
-    @toc << "<p><a href=\##{page.id}>#{page.title}</a></p>"
-    layout = Haml::Engine.new(File.read('app/views/group/archives/layout.html.haml'))
+    layout = Haml::Engine.new(File.read('app/views/group/archives/layout_pages.html.haml'))
     layout.render Object.new, title: page.title, css_file: css_file(page.owner) do
       body = Haml::Engine.new(File.read('app/views/group/archives/page.html.haml'))
-      body.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page
+      body.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page, type: :pages
     end
   end
 
@@ -142,6 +140,6 @@ class Group::Archive::PagesGenerator
 
   private
 
-  attr_writer :user, :group, :toc
+  attr_writer :user, :group
   attr_accessor :types
 end
