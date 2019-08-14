@@ -39,3 +39,6 @@ purple_orange:
 
 committee_page:
   page_id: 1001
+
+on_blues_page:
+  page_id: 1002

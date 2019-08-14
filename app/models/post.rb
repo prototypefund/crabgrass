@@ -57,6 +57,7 @@ class Post < ApplicationRecord
   format_attribute :body
   validates_presence_of :user, :body
   validate :in_reply_to_matches_recipient
+  validate :no_spam
 
   alias created_by user
 
@@ -167,6 +168,12 @@ class Post < ApplicationRecord
     "post_#{id}_body"
   end
 
+  def with_link?
+    format_body
+    body_html.gsub(/<(\/*)a\s([^>]*?)>/) { |_m| return true }
+    return false
+  end
+
   protected
 
   def post_created
@@ -189,5 +196,14 @@ class Post < ApplicationRecord
       errors.add :in_reply_to,
                  "Ugh. The user and the post you are replying to don't match."
     end
+  end
+
+  def no_spam
+    page = discussion.try.page
+    return unless page.try.public? && with_link?
+    return if user.may?(:view, page)
+    Rails.logger.info 'Detected possible SPAM:'
+    Rails.logger.info body
+    errors.add :body, I18n.t(:spam_comment_detected)
   end
 end
