@@ -27,7 +27,7 @@ en:
   ## ARCHIVE
   archive: Archive
   archives: Archives
-  archive_info: "Zip file containing all wiki pages and discussion pages in HTML format and all uploaded files of the group, of all committees and of the council (if any).<br/>Shortly after creation, the archive will be available for download for all group admins. (If a council exists, only council members can access the archive.)"
+  archive_info: "Zip file containing all wiki pages and discussion pages in HTML format and all uploaded files.<br/>Shortly after creation, the archive will be available for download for all group admins. (If a council exists, only council members can access the archive.)"
   single_page_archive: "one file for each group or committee"
   one_file_per_page_archive: "one file per page"
   archive_confirmation: "Are you sure you want to create an archive of %{thing} for download? This action will not delete any content."

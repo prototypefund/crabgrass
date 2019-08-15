@@ -25,7 +25,7 @@ class Group::Archive::SinglepageGenerator
     create_asset_dir # differs from pages_generator
     add_css_file
     add_group_content
-    @group.committees.each do |committee|
+    @group.real_committees.each do |committee|
       add_group_content(committee)
     end
   end

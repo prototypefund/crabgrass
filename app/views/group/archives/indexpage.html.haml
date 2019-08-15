@@ -27,15 +27,11 @@
             #{page.updated_by.display_name}
           %td
             #{page.updated_at}
-    - if group.council
-      %h2= h(:council.t)
-      -# unless group_pages(group.council).empty?
-      %a{ href: "#{group.council.name}/index.html"} #{group.council.display_name}
     - if group.real_committees.any?
       %h2= :committees.t
-      - group.children.each do |committee|
+      - group.real_committees.each do |committee|
         -# unless group_pages(committee).empty?
         %a{ href: "#{committee.name}/index.html" } #{committee.display_name}
-    - if group.parent
+    - if group.parent and not group.council?
       %h2= h(:back_to_group.t)
-      %a{ href: "../index.html"} #{group.display_name}
+      %a{ href: "../index.html"} #{group.parent.display_name}

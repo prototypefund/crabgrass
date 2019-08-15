@@ -23,7 +23,7 @@ class Group::Archive::PagesGenerator
     create_group_dirs
     add_css_file
     add_group_content
-    @group.committees.each do |committee|
+    @group.real_committees.each do |committee|
       add_group_content(committee)
     end
   end
@@ -89,7 +89,7 @@ class Group::Archive::PagesGenerator
   end
 
   def add_css_file
-    FileUtils.cp File.join(STYLES_DIR, 'archive.css'), File.join(tmp_dir, @group.name)
+    FileUtils.cp File.join(STYLES_DIR, 'archive.css'), group_path(@group)
   end
 
   def add_avatar(group)
@@ -131,7 +131,11 @@ class Group::Archive::PagesGenerator
       html = if name == page.owner.name # link to same group
                html.gsub(group_match, '')
              else
-               html.gsub(full_match, full_match[1..-1])
+               if name.include? '+'
+                 html.gsub(full_match, "../#{full_match[1..-1]}")
+               else
+                 html.gsub(full_match, "../../#{full_match[1..-1]}")
+               end
              end
     end
     html

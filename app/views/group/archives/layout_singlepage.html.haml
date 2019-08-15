@@ -26,14 +26,11 @@
             #{page.updated_by.display_name}
           %td
             #{page.updated_at}
-    - if group.council
-      %h2= h(:council.t)
-      %a{ href: "#{group.council.name}/.html"} #{group.council.display_name}
     - if group.real_committees.any?
       %h2= :committees.t
-      - group.children.each do |committee|
+      - group.real_committees.each do |committee|
         %a{ href: "#{committee.name}.html" } #{committee.display_name}
-    - if group.parent
+    - if group.parent and not group.council?
       %h2= h(:back_to_group.t)
-      %a{ href: "#{group.parent.name}.html"} #{group.display_name}
+      %a{ href: "#{group.parent.name}.html"} #{group.parent.display_name}
     = yield

@@ -26,6 +26,7 @@
   %div.attachments
     %h2=h(:file.t)
     - image_url = File.join('assets', page.data.id.to_s, page.data.filename.gsub(' ', '+'))
+    %img{ src: image_url,  alt: 'avatar', height: '64', width: '64' }
     %ul
       %li
         %a{ href: image_url, title: page.data.filename } #{page.data.filename}
