@@ -75,11 +75,18 @@ class Group::Archive::PagesGenerator
   end
 
   def page_content(page)
-    layout = Haml::Engine.new(File.read('app/views/group/archives/layout_pages.html.haml'))
-    layout.render Object.new, title: page.title, css_file: css_file(page.owner) do
-      body = Haml::Engine.new(File.read('app/views/group/archives/page.html.haml'))
-      body.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page, type: :pages
-    end
+    Group::ArchivesController.render :page,
+      assigns: page_assigns(page),
+      layout: 'archive/pages'
+  end
+
+  def page_assigns(page)
+    {
+      page: page,
+      title: page.title,
+      css_file: css_file(page.owner),
+      wiki_html: fixed_html(page)
+    }
   end
 
   def indexpage_content(group, pages)
