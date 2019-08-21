@@ -5,8 +5,7 @@
     %a{ href: 'index.html', title: :back.t, class: 'back'} #{:back.t}
   %h1{ id: page.id }#{page.title}
   %small.summary=h page.summary
-- if wiki_html.present?
-  = wiki_html
+= page.archive_html(type)
 - if page.posts.present?
   %div.comments
     %h2=h(:comments.t)

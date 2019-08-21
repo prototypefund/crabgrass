@@ -1,0 +1,24 @@
+%h2= :pages.t
+%table#toc
+  %tr
+    %th= :title.t
+    %th= :updated
+  - @pages.each do |page|
+    %tr
+      %td
+        %a{ href: "\##{page.id}" } #{page.title}
+      %td
+        #{page.updated_by.display_name}
+      %td
+        #{page.updated_at}
+- if @group.real_committees.any?
+  %h2= :committees.t
+  - @group.real_committees.each do |committee|
+    %a{ href: "#{committee.name}.html" } #{committee.display_name}
+- if @group.parent and not @group.council?
+  %h2= h(:back_to_group.t)
+  %a{ href: "#{@group.parent.name}.html"} #{@group.parent.display_name}
+
+= render partial: 'group/archives/page',
+  collection: @pages,
+  locals: {type: :singlepage}

@@ -42,10 +42,6 @@ class Group::Archive::PagesGenerator
     group.pages_of_type(types)
   end
 
-  def group_names
-    @group.group_names
-  end
-
   # page zip specific stuff
 
   # tree structure with group directory at the top
@@ -84,8 +80,7 @@ class Group::Archive::PagesGenerator
     {
       page: page,
       title: page.title,
-      css_file: css_file(page.owner),
-      wiki_html: fixed_html(page)
+      css_file: css_file(page.owner)
     }
   end
 
@@ -119,34 +114,7 @@ class Group::Archive::PagesGenerator
     end
   end
 
-  def fixed_html(page)
-    return nil unless page.type == 'WikiPage'
-    html = page.wiki.body_html.gsub('/asset', 'asset')
-    group_names.each do |name|
-      name = name.sub('+', '\\\+')
-      res = html.match(/href=\"((\/#{name}\/)([^.\"]*))\"+/)
-      next unless res
-      # <MatchData "href=\"/animals/wiki-page-with-comments\""
-      # 1:"/animals/wiki-page-with-comments"
-      # 2:"/animals/"
-      # 3:"wiki-page-with-comments"
-      full_match = Regexp.last_match(1)
-      group_match = Regexp.last_match(2)
-      page_match = Regexp.last_match(3)
-      # TODO: fix links for id-links like (see SinglepageGenerator)
-      html = html.gsub(full_match, full_match + '.html')
-      html = if name == page.owner.name # link to same group
-               html.gsub(group_match, '')
-             else
-               if name.include? '+'
-                 html.gsub(full_match, "../#{full_match[1..-1]}")
-               else
-                 html.gsub(full_match, "../../#{full_match[1..-1]}")
-               end
-             end
-    end
-    html
-  end
+
 
 
   private

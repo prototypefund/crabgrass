@@ -340,6 +340,13 @@ class Page < ApplicationRecord
     true
   end
 
+  # override this in subclasses…
+  # _type says if it's a singlepage or multi page archive
+  def archive_html(_type)
+    ''
+  end
+
+
   protected
 
   def save_timestamps

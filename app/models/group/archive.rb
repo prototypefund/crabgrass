@@ -43,6 +43,7 @@ class Group::Archive < ActiveRecord::Base
     save!
   rescue Exception => exc
     Rails.logger.error 'Archive could not be created: ' + exc.message
+    Rails.logger.warn exc.backtrace.join("\n")
   end
 
   def excluded_assets

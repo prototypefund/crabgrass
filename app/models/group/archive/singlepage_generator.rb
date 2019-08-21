@@ -68,17 +68,9 @@ class Group::Archive::SinglepageGenerator
   end
 
   def singlepage_content(group)
-    layout = Haml::Engine.new(File.read('app/views/group/archives/layout_singlepage.html.haml'))
-    layout.render Object.new, group: group, pages: group.pages do
-      body_html = ''
-      group.pages.each do |page|
-        if @user.may?(:admin, page)
-          body = Haml::Engine.new(File.read('app/views/group/archives/page.html.haml'))
-          body_html += body.to_html Object.new, wiki_html: fixed_html(page), group: page.owner, page: page, type: :singlepage
-        end
-      end
-      body_html
-    end
+    Group::ArchivesController.render :singlepage,
+      assigns: {group: group, pages: group.pages},
+      layout: 'archive/singlepage'
   end
 
   def add_assets(page)
@@ -128,39 +120,6 @@ class Group::Archive::SinglepageGenerator
     rescue Errno::ENOENT => error
       Rails.logger.error 'Asset file missing: ' + error.message
     end
-  end
-
-  def page_anchor(name)
-    '#' + Page.find_by(name: name).try.id.to_s
-  end
-
-  def fixed_html(page)
-    return nil unless page.type == 'WikiPage'
-    html = page.wiki.body_html.gsub('/asset', 'asset')
-    group_names.each do |name|
-      name = name.sub('+', '\\\+')
-      res = html.match(/href="(\/(#{name})\/([^.\"]*))"+/)
-      next unless res
-      # <MatchData "href=\"/animals/wiki-page-with-comments\""
-      # 1:"/animals/wiki-page-with-comments"
-      # 2:"animals"
-      # 3:"wiki-page-with-comments"
-      full_match = Regexp.last_match(1)
-      group_match = Regexp.last_match(2)
-      page_match = Regexp.last_match(3)
-      # TODO: fix links for id-links like
-      # Markup: [anchor text -> +1007]
-      # HTML: <a href="/rainbow/+1007">anchor text</a>
-      # Attention: group lookup is required because
-      # 'rainbow' might not be the parent and not the owner
-      if name == page.owner.name
-        html = html.gsub(full_match, page_anchor(page_match))
-      else
-        fixed_link = group_match + '.html' + page_anchor(page_match)
-        html = html.gsub(full_match, fixed_link)
-      end
-    end
-    html
   end
 
   private
