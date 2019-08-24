@@ -1,5 +1,3 @@
-image: 0xacab.org:4567/riseuplabs/docker/crabgrass:stretch_amd64
-
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
   MYSQL_HOST: 'mysql'
@@ -22,10 +20,11 @@ bundle_audit:
     bundle-audit update
     bundle-audit check
 
-test:
+# This is the default config for tests.
+# It is hidden and therefore not executed (because of the '.')
+# The 'stretch' and 'buster' tests below are based on this.
+.test: &test
   stage: test
-  services:
-    - mariadb:10.1
   variables:
     MYSQL_HOST: 'mariadb'
     RAILS_ENV: 'test'
@@ -48,3 +47,22 @@ test:
       - tmp/*.log
       - tmp/*.html
       - tmp/*.png
+
+stretch:
+  <<: *test
+  image: 0xacab.org:4567/riseuplabs/docker/crabgrass:stretch_amd64
+  services:
+    - mariadb:10.1
+
+buster:
+  <<: *test
+  before_script:
+    - ruby -v
+    - which ruby
+    - gem install bundler -v '~> 1.16'
+    - bundle install -j $(nproc) --path vendor "${FLAGS[@]}"
+
+  image: 0xacab.org:4567/riseuplabs/docker/crabgrass:buster_amd64
+  services:
+    - mariadb:10.3
+
