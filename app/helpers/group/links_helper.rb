@@ -133,8 +133,7 @@ module Group::LinksHelper
         link_to  :create_a_new_thing.t(thing: :archive.t),
                   group_archive_path(@group),
                   method: :post,
-                  class: 'btn btn-primary btn-space',
-                  confirm: :archive_confirmation.t(thing: @group.display_name)
+                  class: 'btn btn-primary btn-space'
       elsif may_create?(request_to_create_group_archive)
           link_to :create_a_new_thing.t(thing: :archive.t),
                   group_requests_path(@group, type: 'create_group_archive'),

@@ -1,8 +1,7 @@
-require 'javascript_integration_test'
+require 'integration_test'
 require 'fileutils'
 
-class GroupArchiveTest < JavascriptIntegrationTest
-  fixtures :users
+class GroupArchiveTest < IntegrationTest
 
   def setup
     FileUtils.mkdir_p(ASSET_PRIVATE_STORAGE)
@@ -24,8 +23,7 @@ class GroupArchiveTest < JavascriptIntegrationTest
     click_on 'Settings'
     click_on 'Archives'
     click_on 'Create a new Archive'
-    click_on 'OK'
-    sleep 2
+    # sleep 2
     click_on 'Archives'
     assert_content 'Download'
   end
@@ -44,7 +42,7 @@ class GroupArchiveTest < JavascriptIntegrationTest
     @request = Request.last
     visit "/groups/animals/requests/#{@request.id}"
     click_on 'Approve'
-    sleep 2
+    # sleep 2
     click_on 'Settings'
     click_on 'Archives'
     assert_content 'animals.zip'
@@ -57,9 +55,8 @@ class GroupArchiveTest < JavascriptIntegrationTest
     click_on 'Settings'
     click_on 'Archives'
     click_on 'Create a new Archive'
-    click_on 'OK'
     click_on 'Archives'
-    sleep 2
+    # sleep 2
     click_on 'Destroy'
     assert_no_content 'Destroy'
   end
@@ -71,14 +68,12 @@ class GroupArchiveTest < JavascriptIntegrationTest
     click_on 'Settings'
     click_on 'Archives'
     click_on 'Create a new Archive'
-    click_on 'OK'
     click_on 'Archives'
-    sleep 2
+    # sleep 2
     click_on 'Destroy'
     assert_no_content 'Destroy'
     click_on 'Create a new Archive'
-    click_on 'OK'
-    sleep 2
+    # sleep 2
     click_on 'Archives'
     assert_content 'Download'
   end
