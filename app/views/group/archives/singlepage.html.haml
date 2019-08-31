@@ -6,7 +6,7 @@
   - @pages.each do |page|
     %tr
       %td
-        %a{ href: "\##{page.id}" } #{page.title}
+        %a{ href: "\##{page.name_url}" } #{page.title}
       %td
         #{page.updated_by.display_name}
       %td

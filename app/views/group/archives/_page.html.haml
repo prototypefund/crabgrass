@@ -3,7 +3,7 @@
     %a{ href: '#toc', title: :back.t, class: 'back'} #{:back.t}
   - else
     %a{ href: 'index.html', title: :back.t, class: 'back'} #{:back.t}
-  %h1{ id: page.id }#{page.title}
+  %h1{ id: page.name_url }#{page.title}
   %small.summary=h page.summary
 = page.archive_html(type)
 - if page.posts.present?

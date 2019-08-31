@@ -19,7 +19,7 @@ class Group::ArchiveControllerTest < ActionController::TestCase
   def test_download_archive
     login_as @user
     post :create, params: { group_id: :recent_group }
-    get :show, params: { group_id: :recent_group, type: 'singlepage' }
+    get :show, params: { group_id: :recent_group }
     assert_response 202 # TODO: download file
   end
 

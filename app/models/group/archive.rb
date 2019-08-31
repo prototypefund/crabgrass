@@ -18,11 +18,10 @@ require 'zipfilegenerator'
 #
 
 class Group::Archive < ActiveRecord::Base
-  include Group::Archive::Path
   belongs_to :group
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id'
   validates_presence_of :group, :created_by_id
-  before_destroy :delete_group_archive_dir
+  before_destroy :delete_archive_dir
   attr_reader :excluded_assets
 
   ARCHIVED_TYPES = %w[WikiPage DiscussionPage AssetPage Gallery].freeze
@@ -33,17 +32,23 @@ class Group::Archive < ActiveRecord::Base
   def process
     return false unless valid?
     remove_old_archive
-    gen_single = Group::Archive::SinglepageGenerator.new(group: group, types: ARCHIVED_TYPES)
-    gen_pages = Group::Archive::PagesGenerator.new(group: group, types: ARCHIVED_TYPES)
-    gen_single.generate
-    gen_pages.generate
-    self.excluded_asset_ids = gen_single.excluded_assets.join(',')
-    self.filename = zipname_suffix
+    generator = Group::Archive::Generator.new(archive: self, types: ARCHIVED_TYPES)
+    generator.generate
+    self.excluded_asset_ids = generator.excluded_assets.join(',')
+    self.filename = zipname
     self.state = 'success'
     save!
   rescue Exception => exc
     Rails.logger.error 'Archive could not be created: ' + exc.message
     Rails.logger.warn exc.backtrace.join("\n")
+  end
+
+  def zipfile
+    File.join(archive_dir, zipname)
+  end
+
+  def zipname
+    "#{group.name}.zip"
   end
 
   def excluded_assets
@@ -74,22 +79,22 @@ class Group::Archive < ActiveRecord::Base
 
   private
 
-  def group_archive_dir
+  def archive_dir
     File.join(ARCHIVE_STORAGE, group.id.to_s)
   end
 
   def remove_old_archive
-    delete_group_archive_dir
+    delete_archive_dir
     Group::Archive.where(group_id: group.id).order('created_at DESC').offset(1).destroy_all
-    create_group_archive_dir
+    create_archive_dir
   end
 
-  def create_group_archive_dir
-    FileUtils.mkdir_p(group_archive_dir)
+  def create_archive_dir
+    FileUtils.mkdir_p(archive_dir)
   end
 
-  def delete_group_archive_dir
-    FileUtils.rm_r(group_archive_dir) if File.exist? group_archive_dir
+  def delete_archive_dir
+    FileUtils.rm_r(archive_dir) if File.exist? archive_dir
   end
 
 end

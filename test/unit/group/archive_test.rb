@@ -7,11 +7,6 @@ class ArchiveTest < ActiveSupport::TestCase
     @user = users(:blue)
   end
 
-  # FIXME: use paths defined in model
-  def singlepage_zip(group)
-    File.join(ASSET_PRIVATE_STORAGE, 'archives', group.id.to_s, "singlepage_#{group.name}.zip")
-  end
-
   def test_regex
     name = 'animals+mycommittee'
     name = name.sub('+', '\\\+')
@@ -24,7 +19,6 @@ class ArchiveTest < ActiveSupport::TestCase
     assert_equal 'wiki-page-with-comments', Regexp.last_match(3)
   end
 
-  # TODO: test zip creation
   def test_create_archive
     a = Group::Archive.create! group: @group, created_by: @user
     assert_equal @user.id, a.created_by_id
@@ -41,20 +35,17 @@ class ArchiveTest < ActiveSupport::TestCase
   def test_archive_file_exists
     a = Group::Archive.create! group: @group, created_by: @user
     a.process
-    assert_equal true, File.file?(singlepage_zip(@group))
+    assert_equal true, File.file?(a.zipfile)
   end
 
   def test_zip_archive
     a = Group::Archive.create! group: @group, created_by: @user
     a.process
-    Zip::File.open(singlepage_zip(@group)) do |zip_file|
-      zip_file.collect(&:name).include?('recent_group/test-wiki+210.html')
-      zip_file.each do |entry|
-        if entry.name == 'recent_group/test-wiki+210.html'
-          content = entry.get_input_stream.read
-          assert_equal true, content.include?('<h1>test wiki</h1>')
-        end
-      end
+    Zip::File.open(a.zipfile) do |zip_file|
+      entry = zip_file.detect{|file| file.name == 'recent_group/test-wiki+210.html'}
+      assert entry, "zipfile should include 'recent_group/test-wiki+210.html'"
+      content = entry.get_input_stream.read
+      assert_includes content, "<h1 id='test-wiki+210'>test wiki</h1>"
     end
   end
 end

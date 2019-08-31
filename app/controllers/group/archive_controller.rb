@@ -3,16 +3,13 @@ require 'fileutils'
 
 class Group::ArchiveController < Group::BaseController
 
-  def show;
+  def show
     authorize @group, :admin?
-    @archive = @group.archive
-    if params[:type] == 'singlepage'
-      file_name = @archive.stored_zip_file('singlepage')
-    elsif params[:type] == 'pages'
-      file_name = @archive.stored_zip_file('pages')
-    end
-    redirect_to group_archives_url(@group) unless file_name
-    send_file file_name, type: 'application/zip', charset: 'utf-8', status: 202
+    redirect_to group_archives_url(@group) unless @group.archive
+    send_file @group.archive.zipfile,
+      type: 'application/zip',
+      charset: 'utf-8',
+      status: 202
   end
 
   def create

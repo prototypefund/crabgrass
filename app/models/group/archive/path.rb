@@ -4,30 +4,6 @@
 
 module Group::Archive::Path
 
-  def group_archive_dir(group = @group)
-    File.join(ARCHIVE_STORAGE, group.id.to_s)
-  end
-
-  def stored_zip_file(type)
-    File.join(group_archive_dir, zipname(type))
-  end
-
-  def zipname(type)
-    if type == 'singlepage'
-      'singlepage_' + zipname_suffix
-    else
-      'pages_' + zipname_suffix
-    end
-  end
-
-  def tmp_zip_file
-    File.join(tmp_dir, zipname)
-  end
-
-  def zipname_suffix
-    "#{@group.name}.zip"
-  end
-
   def css_file(group)
     if group.committee? # FIXME: will not work for councils (if exported as children)
       '../archive.css'

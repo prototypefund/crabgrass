@@ -161,10 +161,9 @@ module Group::LinksHelper
     end
   end
 
-  def download_group_archive_link(params)
-    return unless ['singlepage', 'pages'].include? params[:type]
-    if logged_in? && policy(@group).show?
-      link_to @group.archive.zipname(params[:type]), group_archive_path(@group, params)
+  def download_group_archive_link
+    if logged_in? && policy(@group).admin?
+      link_to @group.archive.zipname, group_archive_path(@group)
     end
   end
 end
