@@ -3,8 +3,7 @@ class Group::Archive::PagesGenerator
 
   attr_reader :tmp_dir
 
-  def initialize(user:, group:, types:)
-    self.user = user
+  def initialize(group:, types:)
     self.group = group
     self.types = types
   end
@@ -57,7 +56,7 @@ class Group::Archive::PagesGenerator
     return if pages.empty?
     content = ''
     pages.each do |page|
-      add_page(page, group) if @user.may?(:admin, page)
+      add_page(page, group)
     end
     File.open(index_path(group), 'w') { |file| file.write(indexpage_content(group, pages)) }
   end
@@ -119,6 +118,6 @@ class Group::Archive::PagesGenerator
 
   private
 
-  attr_writer :user, :group
+  attr_writer :group
   attr_accessor :types
 end

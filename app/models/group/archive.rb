@@ -33,8 +33,8 @@ class Group::Archive < ActiveRecord::Base
   def process
     return false unless valid?
     remove_old_archive
-    gen_single = Group::Archive::SinglepageGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES)
-    gen_pages = Group::Archive::PagesGenerator.new(user: created_by, group: group, types: ARCHIVED_TYPES)
+    gen_single = Group::Archive::SinglepageGenerator.new(group: group, types: ARCHIVED_TYPES)
+    gen_pages = Group::Archive::PagesGenerator.new(group: group, types: ARCHIVED_TYPES)
     gen_single.generate
     gen_pages.generate
     self.excluded_asset_ids = gen_single.excluded_assets.join(',')

@@ -4,8 +4,7 @@ class Group::Archive::SinglepageGenerator
   attr_reader :tmp_dir, :excluded_assets
   MAX_ASSET_SIZE = 100.megabytes
 
-  def initialize(user:, group:, types:)
-    self.user = user
+  def initialize(group:, types:)
     self.group = group
     self.types = types
   end
@@ -60,7 +59,7 @@ class Group::Archive::SinglepageGenerator
     return if pages.empty?
     content = ''
     pages.each do |page|
-      add_assets(page) if @user.may?(:admin, page)
+      add_assets(page)
     end
     content = singlepage_content(group)
     return unless content
@@ -124,6 +123,6 @@ class Group::Archive::SinglepageGenerator
 
   private
 
-  attr_writer :user, :group
+  attr_writer :group
   attr_accessor :types
 end
