@@ -144,7 +144,7 @@ module Group::LinksHelper
   end
 
   def reload_archive_page_link
-    link_to :group_archive_settings_reload.t, group_archives_path(@group)
+    link_to :group_archive_settings_reload.t, group_archive_path(@group)
   end
 
   def request_to_create_group_archive
@@ -162,7 +162,9 @@ module Group::LinksHelper
 
   def download_group_archive_link
     if logged_in? && policy(@group).admin?
-      link_to @group.archive.zipname, group_archive_path(@group)
+      link_to @group.archive.zipname,
+        group_archive_path(@group, format: :zip),
+        class: 'btn btn-default'
     end
   end
 end

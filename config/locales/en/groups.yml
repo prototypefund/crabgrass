@@ -26,7 +26,6 @@ en:
 
   ## ARCHIVE
   archive: Archive
-  archives: Archives
   archive_info: "Zip file containing all wiki pages and discussion pages in HTML format and all uploaded files.<br/>Shortly after creation, the archive will be available for download for all group admins. (If a council exists, only council members can access the archive.)"
   archive_confirmation: "Are you sure you want to create an archive of %{thing} for download? This action will not delete any content."
   archive_destroy_confirmation: "Are you sure you want to delete the  archive of %{thing}?"

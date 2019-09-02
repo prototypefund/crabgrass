@@ -19,6 +19,6 @@
   %h2= h(:back_to_group.t)
   %a{ href: "#{@group.parent.name}.html"} #{@group.parent.display_name}
 
-= render partial: 'group/archives/page',
+= render partial: 'page',
   collection: @pages,
   locals: {type: :singlepage}

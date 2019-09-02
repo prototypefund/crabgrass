@@ -157,7 +157,6 @@ Crabgrass::Application.routes.draw do
     resource  :profile, only: %i[edit update]
     resource  :structure, only: %i[show new create update]
     resource  :archive, only: %i[show create destroy], controller: 'archive'
-    get 'archives', as: 'archives', to: 'archives#index'
   end
 
   ##

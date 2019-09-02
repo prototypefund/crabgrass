@@ -8,7 +8,7 @@
     - else
       - f.row do |r|
         - r.label :download.t
-        - r.input link_line(download_group_archive_link, :download_archive.t)
+        - r.input download_group_archive_link
         - r.info "Archived by #{@archive.archived_by} on #{friendly_date(@archive.updated_at)}"
       - if @archive.excluded_assets.any?
         - f.row do |r|

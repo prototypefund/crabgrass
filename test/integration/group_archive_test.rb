@@ -21,10 +21,10 @@ class GroupArchiveTest < IntegrationTest
     login
     visit '/recent_group'
     click_on 'Settings'
-    click_on 'Archives'
+    click_on 'Archive'
     click_on 'Create a new Archive'
     # sleep 2
-    click_on 'Archives'
+    click_on 'Archive'
     assert_content 'Download'
   end
 
@@ -33,7 +33,7 @@ class GroupArchiveTest < IntegrationTest
     login
     visit '/animals'
     click_on 'Settings'
-    click_on 'Archives'
+    click_on 'Archive'
     click_link 'Create a new Archive'
     assert_content 'Request to create Group Archive'
     logout
@@ -44,7 +44,7 @@ class GroupArchiveTest < IntegrationTest
     click_on 'Approve'
     # sleep 2
     click_on 'Settings'
-    click_on 'Archives'
+    click_on 'Archive'
     assert_content 'animals.zip'
   end
 
@@ -53,9 +53,9 @@ class GroupArchiveTest < IntegrationTest
     login
     visit '/recent_group'
     click_on 'Settings'
-    click_on 'Archives'
+    click_on 'Archive'
     click_on 'Create a new Archive'
-    click_on 'Archives'
+    click_on 'Archive'
     # sleep 2
     click_on 'Destroy'
     assert_no_content 'Destroy'
@@ -66,15 +66,15 @@ class GroupArchiveTest < IntegrationTest
     login
     visit '/recent_group'
     click_on 'Settings'
-    click_on 'Archives'
+    click_on 'Archive'
     click_on 'Create a new Archive'
-    click_on 'Archives'
+    click_on 'Archive'
     # sleep 2
     click_on 'Destroy'
     assert_no_content 'Destroy'
     click_on 'Create a new Archive'
     # sleep 2
-    click_on 'Archives'
+    click_on 'Archive'
     assert_content 'Download'
   end
 end

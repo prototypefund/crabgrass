@@ -249,7 +249,7 @@ define_navigation do
       label  { :settings.t }
       icon   :control
       url    { group_settings_path(@group) }
-      active { controller?('group/settings', 'group/permissions', 'group/profiles', 'group/structures', 'group/archives', 'group/requests', 'group/wikis', 'wiki/versions', 'wiki/diffs') }
+      active { controller?('group/settings', 'group/permissions', 'group/profiles', 'group/structures', 'group/archive', 'group/requests', 'group/wikis', 'wiki/versions', 'wiki/diffs') }
 
       local_section :settings do
         visible { may_admin?(@group) }
@@ -286,11 +286,11 @@ define_navigation do
         active { controller?('group/structures') }
       end
 
-      local_section :archives do
+      local_section :archive do
         visible { may_admin?(@group) }
-        label  { :archives.t }
-        url    { group_archives_path(@group, action: :index) }
-        active { controller?('group/archives') }
+        label  { :archive.t }
+        url    { group_archive_path(@group, action: :index) }
+        active { controller?('group/archive') }
       end
 
       local_section :requests do
